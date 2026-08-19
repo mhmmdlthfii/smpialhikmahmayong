@@ -1,0 +1,55 @@
+# ------------------------------------------------------------------------------
+# SMP ISLAM AL HIKMAH MAYONG - SPA ROUTING & SECURITY CONFIGURATION (HOSTINGER)
+# ------------------------------------------------------------------------------
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Pastikan Request ke Folder API atau File Asli Tidak Di-rewrite ke index.html
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 2. Rewrite Semua Halaman SPA (Single Page Application) ke index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# HTTP Security Headers & Optimization
+# ------------------------------------------------------------------------------
+<IfModule mod_headers.c>
+  # Proteksi XSS & Clickjacking
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Caching untuk file statis (JS, CSS, Gambar, Fonts)
+  <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf|webp|woff|woff2|ttf|svg)$">
+    Header set Cache-Control "max-age=2592000, public"
+  </FilesMatch>
+
+  # Jangan cache index.html agar user selalu dapat versi UI terbaru
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# Gzip / Brotli Compression
+# ------------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+</IfModule>

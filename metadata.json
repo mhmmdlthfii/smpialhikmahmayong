@@ -1,0 +1,6 @@
+{
+  "name": "SMP Islam Al Hikmah Mayong",
+  "description": "Ekosistem Digital Sekolah Terpadu SMP Islam Al Hikmah Mayong: Portal Akademik SSO, E-Surat ETTD, E-Jurnal, Presensi Live QR, E-Poin Karakter, E-Kelulusan, CMS, dan Verifikasi Dokumen Publik.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
