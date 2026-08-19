@@ -101,22 +101,54 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Logo & School Identity - Clicking automatically navigates to Home */}
+          {/* Logo & School Identity or 1343x342 Photo Banner */}
           <button
             onClick={() => handleNavClick('/')}
-            className="flex items-center gap-3 group text-left cursor-pointer focus:outline-none"
+            className="flex items-center group text-left cursor-pointer focus:outline-none py-1"
             title="Kembali ke Beranda"
           >
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-teal-700/20 group-hover:scale-105 transition-transform duration-200 border border-white/40">
-              <School className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <span className="font-heading font-black text-lg text-teal-950 tracking-tight block group-hover:text-teal-700 transition-colors">
-                {websiteSettings.schoolName}
-              </span>
-              <span className="text-[11px] font-semibold text-teal-700/80 block -mt-0.5">
-                School Digital Platform
-              </span>
+            {websiteSettings.headerBannerUrl && websiteSettings.headerDisplayMode !== 'logo_text' ? (
+              <div className="relative overflow-hidden rounded-xl border border-teal-100/80 bg-white/40 shadow-xs group-hover:shadow-md group-hover:border-teal-300 transition-all duration-200">
+                <img
+                  src={websiteSettings.headerBannerUrl}
+                  alt={websiteSettings.headerBannerAlt || websiteSettings.schoolName}
+                  className="h-10 sm:h-12 md:h-13 lg:h-14 w-auto max-w-[210px] sm:max-w-[290px] md:max-w-[370px] lg:max-w-[450px] object-contain object-left transition-transform duration-200 group-hover:scale-[1.01]"
+                  onError={(e) => {
+                    // Fallback to logo + text if image URL fails
+                    (e.target as HTMLElement).style.display = 'none';
+                    const fallback = document.getElementById('header-fallback-logo');
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+              </div>
+            ) : null}
+
+            {/* Fallback or Dynamic Logo + Text Mode */}
+            <div
+              id="header-fallback-logo"
+              className={`items-center gap-3 ${
+                websiteSettings.headerBannerUrl && websiteSettings.headerDisplayMode !== 'logo_text' ? 'hidden' : 'flex'
+              }`}
+            >
+              {websiteSettings.schoolLogoUrl ? (
+                <img
+                  src={websiteSettings.schoolLogoUrl}
+                  alt={websiteSettings.schoolName}
+                  className="w-11 h-11 rounded-2xl object-contain bg-white p-1 border border-teal-200 shadow-xs group-hover:scale-105 transition-transform duration-200"
+                />
+              ) : (
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-teal-700/20 group-hover:scale-105 transition-transform duration-200 border border-white/40">
+                  <School className="w-6 h-6 text-white" />
+                </div>
+              )}
+              <div>
+                <span className="font-heading font-black text-lg text-teal-950 tracking-tight block group-hover:text-teal-700 transition-colors line-clamp-1">
+                  {websiteSettings.schoolName}
+                </span>
+                <span className="text-[11px] font-semibold text-teal-700/80 block -mt-0.5">
+                  School Digital Platform
+                </span>
+              </div>
             </div>
           </button>
 
@@ -354,30 +386,31 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
 
           </nav>
 
-          {/* Right Action Tools: Verification, PPDB Badge & Portal SSO Button */}
-          <div className="hidden sm:flex items-center gap-3">
+          {/* Right Action Tools: Minimalist & Elegant Action Pills */}
+          <div className="hidden sm:flex items-center gap-2">
             
-            {/* Quick Verification Button */}
+            {/* Quick Verification Button (E-TTD) */}
             <button
               onClick={() => handleNavClick('/verify')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer backdrop-blur-xl ${
+              className={`group flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-full transition-all duration-150 cursor-pointer ${
                 currentPath.startsWith('/verify')
-                  ? 'bg-teal-50/90 text-teal-900 border-teal-300 shadow-xs'
-                  : 'text-teal-900 bg-white/55 border-white/80 hover:border-teal-400 hover:bg-white/80 shadow-xs'
+                  ? 'bg-teal-700 text-white shadow-xs'
+                  : 'text-teal-900 bg-white/70 hover:bg-white border border-teal-200/70 hover:border-teal-400 shadow-2xs hover:shadow-xs'
               }`}
-              title="Cek Keaslian Surat / Dokumen ETTD"
+              title="Verifikasi Dokumen & Surat Digital E-TTD"
             >
-              <ShieldCheck className="w-4 h-4 text-teal-600" />
-              <span>Verifikasi ETTD</span>
+              <ShieldCheck className={`w-3.5 h-3.5 ${currentPath.startsWith('/verify') ? 'text-white' : 'text-emerald-600 group-hover:scale-110'} transition-transform`} />
+              <span>E-TTD</span>
             </button>
 
             {/* PPDB Highlighted Button */}
             <button
               onClick={() => handleNavClick('/ppdb')}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 hover:from-amber-500 hover:to-orange-600 shadow-md shadow-amber-500/20 hover:scale-[1.02] transition-all cursor-pointer"
+              className="group flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-sm shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer"
+              title="Pendaftaran Peserta Didik Baru (PPDB)"
             >
-              <Sparkles className="w-3.5 h-3.5 text-white" />
-              <span>PPDB 2026/2027</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-12 transition-transform" />
+              <span>PPDB</span>
             </button>
 
             {/* Portal SSO Auth Area */}
@@ -385,27 +418,23 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-xl border border-white/80 hover:border-teal-400 bg-white/70 backdrop-blur-xl transition-all cursor-pointer shadow-xs"
+                  className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-teal-200/80 hover:border-teal-400 bg-white/80 hover:bg-white shadow-2xs hover:shadow-xs transition-all cursor-pointer"
+                  title="Menu Akun Portal"
                 >
                   <img
                     src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
                     alt={user.name}
-                    className="w-7 h-7 rounded-full object-cover border border-teal-500/30"
+                    className="w-6 h-6 rounded-full object-cover border border-teal-500/30"
                   />
-                  <div className="text-left hidden md:block">
-                    <span className="text-xs font-bold text-teal-950 block truncate max-w-[110px]">
-                      {user.name.split(' ')[0]}
-                    </span>
-                    <span className="text-[10px] font-medium text-teal-700 block -mt-0.5">
-                      {getRoleDisplayName(activeRole || user.roles[0])}
-                    </span>
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-teal-600" />
+                  <span className="text-xs font-bold text-teal-950 block truncate max-w-[90px]">
+                    {user.name.split(' ')[0]}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-teal-600" />
                 </button>
 
                 {userDropdownOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-white/85 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5"
+                    className="absolute right-0 mt-2 w-56 rounded-2xl bg-white/90 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5"
                     onMouseLeave={() => setUserDropdownOpen(false)}
                   >
                     <div className="px-3 py-2 border-b border-slate-100/80 mb-1">
@@ -465,29 +494,40 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
             ) : (
               <button
                 onClick={() => navigate('/login')}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 hover:from-teal-800 hover:to-emerald-700 shadow-md shadow-teal-700/20 hover:shadow-teal-700/30 transition-all cursor-pointer"
+                className="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-teal-800 to-teal-900 hover:from-teal-700 hover:to-emerald-800 shadow-sm shadow-teal-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer border border-teal-700/50"
+                title="Masuk ke Portal Digital"
               >
-                <UserCheck className="w-4 h-4" />
-                <span>Masuk Portal</span>
+                <UserCheck className="w-3.5 h-3.5 text-teal-200 group-hover:scale-110 transition-transform" />
+                <span>Portal</span>
               </button>
             )}
           </div>
 
-          {/* Mobile Menu Trigger */}
-          <div className="flex items-center gap-2 lg:hidden">
+          {/* Mobile Menu Trigger & Action Pills */}
+          <div className="flex items-center gap-1.5 lg:hidden">
+            <button
+              onClick={() => handleNavClick('/verify')}
+              className="px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-white/80 border border-teal-200 shadow-2xs flex items-center gap-1"
+              title="E-TTD"
+            >
+              <ShieldCheck className="w-3 h-3 text-emerald-600" />
+              <span>E-TTD</span>
+            </button>
+
             <button
               onClick={() => handleNavClick('/ppdb')}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-amber-400 to-orange-500 shadow-xs"
+              className="px-2.5 py-1 rounded-full text-[11px] font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-2xs flex items-center gap-1"
             >
-              PPDB
+              <Sparkles className="w-3 h-3" />
+              <span>PPDB</span>
             </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-slate-700 hover:bg-white/80 focus:outline-none cursor-pointer"
+              className="p-1.5 rounded-xl text-slate-700 hover:bg-white/80 focus:outline-none cursor-pointer ml-0.5"
               aria-label="Buka Menu Navigasi"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 

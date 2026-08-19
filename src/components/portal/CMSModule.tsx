@@ -495,78 +495,227 @@ export const CMSModule: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 1: IDENTITAS SEKOLAH */}
+      {/* TAB 1: IDENTITAS SEKOLAH & HEADER BANNER */}
       {activeTab === 'identity' && (
-        <form onSubmit={handleSaveIdentity} className="glass-panel p-6 rounded-3xl border border-teal-100 space-y-6 shadow-xs">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label className="block font-bold text-teal-950 mb-1">Nama Resmi Sekolah</label>
-              <input
-                type="text"
-                value={identityForm.schoolName}
-                onChange={(e) => setIdentityForm({ ...identityForm, schoolName: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
-              />
+        <form onSubmit={handleSaveIdentity} className="space-y-6">
+          
+          {/* Section: Header Banner Photo (1343 x 342 px) */}
+          <div className="glass-panel p-6 rounded-3xl border border-teal-200/80 bg-white/80 space-y-4 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-teal-100">
+              <div>
+                <h3 className="font-heading font-extrabold text-sm text-teal-950 flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-teal-600" />
+                  <span>Foto / Banner Header Navigasi (Ukuran: 1343 x 342 Pixel)</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Foto header persegi panjang (1343x342 px) yang akan tampil di sisi kiri atas navbar utama sebagai identitas visual sekolah.
+                </p>
+              </div>
+              
+              {/* Display Mode Switch */}
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-teal-50 border border-teal-200">
+                <button
+                  type="button"
+                  onClick={() => setIdentityForm({ ...identityForm, headerDisplayMode: 'photo_banner' })}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    identityForm.headerDisplayMode !== 'logo_text'
+                      ? 'bg-teal-700 text-white shadow-2xs'
+                      : 'text-teal-900 hover:bg-white/60'
+                  }`}
+                >
+                  Gunakan Foto Banner
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIdentityForm({ ...identityForm, headerDisplayMode: 'logo_text' })}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    identityForm.headerDisplayMode === 'logo_text'
+                      ? 'bg-teal-700 text-white shadow-2xs'
+                      : 'text-teal-900 hover:bg-white/60'
+                  }`}
+                >
+                  Icon & Teks Saja
+                </button>
+              </div>
             </div>
 
-            <div>
-              <label className="block font-bold text-teal-950 mb-1">Tagline / Visi Singkat</label>
-              <input
-                type="text"
-                value={identityForm.tagline}
-                onChange={(e) => setIdentityForm({ ...identityForm, tagline: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
-              />
+            {/* Live Banner Preview Box */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-teal-950">
+                Preview Tampilan Banner (Proporsi Asli 1343 × 342)
+              </label>
+              <div className="relative w-full max-w-2xl aspect-[1343/342] rounded-2xl overflow-hidden border-2 border-dashed border-teal-300 bg-teal-950/5 flex items-center justify-center shadow-xs group">
+                {identityForm.headerBannerUrl ? (
+                  <img
+                    src={identityForm.headerBannerUrl}
+                    alt={identityForm.headerBannerAlt || 'Header Banner'}
+                    className="w-full h-full object-contain object-left bg-white/40"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="text-center p-4">
+                    <ImageIcon className="w-8 h-8 text-teal-400 mx-auto mb-1" />
+                    <p className="text-xs font-bold text-teal-900">Belum Ada URL Foto Banner</p>
+                    <p className="text-[11px] text-slate-500">Masukkan tautan foto berukuran 1343x342 px di bawah.</p>
+                  </div>
+                )}
+
+                <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-teal-950/80 text-white text-[10px] font-mono font-bold">
+                  1343 × 342 px
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label className="block font-bold text-teal-950 mb-1">NPSN</label>
-              <input
-                type="text"
-                value={identityForm.npsn}
-                onChange={(e) => setIdentityForm({ ...identityForm, npsn: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-mono shadow-xs"
-              />
+            {/* Input URL & Presets */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">
+                  URL Foto Banner Header (Direct Image Link)
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://.../banner-1343x342.jpg"
+                  value={identityForm.headerBannerUrl || ''}
+                  onChange={(e) => setIdentityForm({ ...identityForm, headerBannerUrl: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">
+                  Teks Alternatif / Alt Text Banner
+                </label>
+                <input
+                  type="text"
+                  placeholder="Header Banner Resmi SMP Islam Al Hikmah Mayong"
+                  value={identityForm.headerBannerAlt || ''}
+                  onChange={(e) => setIdentityForm({ ...identityForm, headerBannerAlt: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block font-bold text-teal-950 mb-1">Akreditasi</label>
-              <input
-                type="text"
-                value={identityForm.akreditasi}
-                onChange={(e) => setIdentityForm({ ...identityForm, akreditasi: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
-              />
+            {/* Quick Presets for 1343x342 Header Banner */}
+            <div className="pt-2 border-t border-teal-100">
+              <span className="block text-[11px] font-bold text-teal-800 mb-1.5">
+                Pilih Contoh Preset Banner Header:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIdentityForm({
+                    ...identityForm,
+                    headerBannerUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1343&h=342&fit=crop&q=85',
+                    headerDisplayMode: 'photo_banner'
+                  })}
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 transition-colors"
+                >
+                  🟢 Preset Edukasi & Kampus Islami
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIdentityForm({
+                    ...identityForm,
+                    headerBannerUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1343&h=342&fit=crop&q=85',
+                    headerDisplayMode: 'photo_banner'
+                  })}
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 transition-colors"
+                >
+                  🟡 Preset Aktivitas Santri & Belajar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIdentityForm({
+                    ...identityForm,
+                    headerBannerUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1343&h=342&fit=crop&q=85',
+                    headerDisplayMode: 'photo_banner'
+                  })}
+                  className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-teal-50 hover:bg-teal-100 text-teal-900 border border-teal-200 transition-colors"
+                >
+                  🔵 Preset Tahfidz & Quranic School
+                </button>
+              </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block font-bold text-teal-950 mb-1">Nama Kepala Sekolah</label>
-              <input
-                type="text"
-                value={identityForm.headmasterName}
-                onChange={(e) => setIdentityForm({ ...identityForm, headmasterName: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
-              />
-            </div>
+          {/* Master Identity Form */}
+          <div className="glass-panel p-6 rounded-3xl border border-teal-100 space-y-4 shadow-xs">
+            <h3 className="font-heading font-extrabold text-sm text-teal-950 pb-2 border-b border-teal-100">
+              Informasi Umum Sekolah
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">Nama Resmi Sekolah</label>
+                <input
+                  type="text"
+                  value={identityForm.schoolName}
+                  onChange={(e) => setIdentityForm({ ...identityForm, schoolName: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                />
+              </div>
 
-            <div>
-              <label className="block font-bold text-teal-950 mb-1">NIP Kepala Sekolah</label>
-              <input
-                type="text"
-                value={identityForm.headmasterNip}
-                onChange={(e) => setIdentityForm({ ...identityForm, headmasterNip: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-mono shadow-xs"
-              />
-            </div>
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">Tagline / Visi Singkat</label>
+                <input
+                  type="text"
+                  value={identityForm.tagline}
+                  onChange={(e) => setIdentityForm({ ...identityForm, tagline: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                />
+              </div>
 
-            <div className="md:col-span-2">
-              <label className="block font-bold text-teal-950 mb-1">Alamat Lengkap</label>
-              <input
-                type="text"
-                value={identityForm.address}
-                onChange={(e) => setIdentityForm({ ...identityForm, address: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
-              />
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">NPSN</label>
+                <input
+                  type="text"
+                  value={identityForm.npsn}
+                  onChange={(e) => setIdentityForm({ ...identityForm, npsn: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-mono shadow-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">Akreditasi</label>
+                <input
+                  type="text"
+                  value={identityForm.akreditasi}
+                  onChange={(e) => setIdentityForm({ ...identityForm, akreditasi: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">Nama Kepala Sekolah</label>
+                <input
+                  type="text"
+                  value={identityForm.headmasterName}
+                  onChange={(e) => setIdentityForm({ ...identityForm, headmasterName: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-teal-950 mb-1">NIP Kepala Sekolah</label>
+                <input
+                  type="text"
+                  value={identityForm.headmasterNip}
+                  onChange={(e) => setIdentityForm({ ...identityForm, headmasterNip: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-mono shadow-xs"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block font-bold text-teal-950 mb-1">Alamat Lengkap</label>
+                <input
+                  type="text"
+                  value={identityForm.address}
+                  onChange={(e) => setIdentityForm({ ...identityForm, address: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                />
+              </div>
             </div>
           </div>
 
@@ -576,7 +725,7 @@ export const CMSModule: React.FC = () => {
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 text-white text-xs font-bold flex items-center gap-2 shadow-md shadow-amber-500/20 cursor-pointer"
             >
               <Save className="w-4 h-4" />
-              <span>Simpan Identitas Sekolah</span>
+              <span>Simpan Identitas & Header Sekolah</span>
             </button>
           </div>
         </form>

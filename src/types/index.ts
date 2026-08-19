@@ -581,6 +581,9 @@ export interface WebsiteSettings {
   headmasterNip: string;
   headmasterSignatureUrl?: string;
   schoolLogoUrl: string;
+  headerBannerUrl?: string; // Photo banner header berukuran 1343x342 px
+  headerBannerAlt?: string;
+  headerDisplayMode?: 'photo_banner' | 'logo_text'; // Mode tampilan logo di header
   statsTotalStudents: number;
   statsTotalStaff: number;
   statsPrograms: number;
