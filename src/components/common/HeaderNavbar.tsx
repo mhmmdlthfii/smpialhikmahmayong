@@ -7,6 +7,7 @@ import {
   X,
   ShieldCheck,
   UserCheck,
+  LogIn,
   LogOut,
   ChevronDown,
   LayoutDashboard,
@@ -95,60 +96,31 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
   const isProfilActive = currentPath === '/profil';
   const isPengajarActive = currentPath === '/pengajar' || currentPath === '/guru';
   const isGaleriActive = currentPath === '/galeri';
+  const isPpdbActive = currentPath === '/ppdb';
+
+  const defaultBannerUrl = 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1343&h=342&fit=crop&q=85';
+  const activeHeaderBanner = websiteSettings.headerBannerUrl || defaultBannerUrl;
 
   return (
-    <header className="sticky-header-nav sticky top-0 z-50 w-full bg-white/65 hover:bg-white/75 backdrop-blur-2xl backdrop-saturate-200 border-b border-white/60 shadow-xs shadow-teal-950/5 transition-all duration-300">
+    <header className="sticky-header-nav sticky top-0 z-50 w-full bg-white/75 hover:bg-white/85 backdrop-blur-2xl backdrop-saturate-200 border-b border-white/60 shadow-xs shadow-teal-950/5 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Logo & School Identity or 1343x342 Photo Banner */}
+          {/* Rectangular Photo Header Banner (Configurable via Admin CMS) */}
           <button
             onClick={() => handleNavClick('/')}
             className="flex items-center group text-left cursor-pointer focus:outline-none py-1"
-            title="Kembali ke Beranda"
+            title={`Beranda - ${websiteSettings.schoolName}`}
           >
-            {websiteSettings.headerBannerUrl && websiteSettings.headerDisplayMode !== 'logo_text' ? (
-              <div className="relative overflow-hidden rounded-xl border border-teal-100/80 bg-white/40 shadow-xs group-hover:shadow-md group-hover:border-teal-300 transition-all duration-200">
-                <img
-                  src={websiteSettings.headerBannerUrl}
-                  alt={websiteSettings.headerBannerAlt || websiteSettings.schoolName}
-                  className="h-10 sm:h-12 md:h-13 lg:h-14 w-auto max-w-[210px] sm:max-w-[290px] md:max-w-[370px] lg:max-w-[450px] object-contain object-left transition-transform duration-200 group-hover:scale-[1.01]"
-                  onError={(e) => {
-                    // Fallback to logo + text if image URL fails
-                    (e.target as HTMLElement).style.display = 'none';
-                    const fallback = document.getElementById('header-fallback-logo');
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-              </div>
-            ) : null}
-
-            {/* Fallback or Dynamic Logo + Text Mode */}
-            <div
-              id="header-fallback-logo"
-              className={`items-center gap-3 ${
-                websiteSettings.headerBannerUrl && websiteSettings.headerDisplayMode !== 'logo_text' ? 'hidden' : 'flex'
-              }`}
-            >
-              {websiteSettings.schoolLogoUrl ? (
-                <img
-                  src={websiteSettings.schoolLogoUrl}
-                  alt={websiteSettings.schoolName}
-                  className="w-11 h-11 rounded-2xl object-contain bg-white p-1 border border-teal-200 shadow-xs group-hover:scale-105 transition-transform duration-200"
-                />
-              ) : (
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-teal-700 via-teal-600 to-emerald-500 flex items-center justify-center text-white shadow-md shadow-teal-700/20 group-hover:scale-105 transition-transform duration-200 border border-white/40">
-                  <School className="w-6 h-6 text-white" />
-                </div>
-              )}
-              <div>
-                <span className="font-heading font-black text-lg text-teal-950 tracking-tight block group-hover:text-teal-700 transition-colors line-clamp-1">
-                  {websiteSettings.schoolName}
-                </span>
-                <span className="text-[11px] font-semibold text-teal-700/80 block -mt-0.5">
-                  School Digital Platform
-                </span>
-              </div>
+            <div className="relative overflow-hidden rounded-xl border border-teal-100/90 bg-white/70 shadow-xs group-hover:shadow-md group-hover:border-teal-300 transition-all duration-200 p-0.5">
+              <img
+                src={activeHeaderBanner}
+                alt={websiteSettings.headerBannerAlt || websiteSettings.schoolName}
+                className="h-10 sm:h-12 md:h-13 lg:h-14 w-auto max-w-[210px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[440px] object-contain object-left rounded-lg transition-transform duration-200 group-hover:scale-[1.01]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = defaultBannerUrl;
+                }}
+              />
             </div>
           </button>
 
@@ -384,6 +356,19 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               Galeri
             </button>
 
+            {/* 7. PPDB Menu Item (Disebelah Galeri) */}
+            <button
+              onClick={() => handleNavClick('/ppdb')}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                isPpdbActive
+                  ? 'bg-amber-500 text-white font-extrabold shadow-xs shadow-amber-500/25'
+                  : 'text-amber-800 hover:text-amber-950 hover:bg-amber-50/80 font-bold'
+              }`}
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${isPpdbActive ? 'text-white' : 'text-amber-600'}`} />
+              <span>PPDB</span>
+            </button>
+
           </nav>
 
           {/* Right Action Tools: Minimalist & Elegant Action Pills */}
@@ -403,23 +388,13 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               <span>E-TTD</span>
             </button>
 
-            {/* PPDB Highlighted Button */}
-            <button
-              onClick={() => handleNavClick('/ppdb')}
-              className="group flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-sm shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer"
-              title="Pendaftaran Peserta Didik Baru (PPDB)"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-100 group-hover:rotate-12 transition-transform" />
-              <span>PPDB</span>
-            </button>
-
-            {/* Portal SSO Auth Area */}
+            {/* Portal Login Auth Area */}
             {isAuthenticated && user ? (
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full border border-teal-200/80 hover:border-teal-400 bg-white/80 hover:bg-white shadow-2xs hover:shadow-xs transition-all cursor-pointer"
-                  title="Menu Akun Portal"
+                  title="Menu Akun"
                 >
                   <img
                     src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
@@ -495,10 +470,10 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               <button
                 onClick={() => navigate('/login')}
                 className="group flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-teal-800 to-teal-900 hover:from-teal-700 hover:to-emerald-800 shadow-sm shadow-teal-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150 cursor-pointer border border-teal-700/50"
-                title="Masuk ke Portal Digital"
+                title="Masuk / Login ke Akun"
               >
-                <UserCheck className="w-3.5 h-3.5 text-teal-200 group-hover:scale-110 transition-transform" />
-                <span>Portal</span>
+                <LogIn className="w-3.5 h-3.5 text-teal-200 group-hover:scale-110 transition-transform" />
+                <span>Login</span>
               </button>
             )}
           </div>
@@ -514,13 +489,26 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               <span>E-TTD</span>
             </button>
 
-            <button
-              onClick={() => handleNavClick('/ppdb')}
-              className="px-2.5 py-1 rounded-full text-[11px] font-bold text-white bg-gradient-to-r from-amber-500 to-orange-500 shadow-2xs flex items-center gap-1"
-            >
-              <Sparkles className="w-3 h-3" />
-              <span>PPDB</span>
-            </button>
+            {isAuthenticated && user ? (
+              <button
+                onClick={() => handleNavClick('/portal')}
+                className="p-1 rounded-full border border-teal-300 bg-white"
+              >
+                <img
+                  src={user.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
+                  alt={user.name}
+                  className="w-5 h-5 rounded-full object-cover"
+                />
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                className="px-2.5 py-1 rounded-full text-[11px] font-bold text-white bg-gradient-to-r from-teal-800 to-teal-900 shadow-2xs flex items-center gap-1"
+              >
+                <LogIn className="w-3 h-3" />
+                <span>Login</span>
+              </button>
+            )}
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -559,8 +547,8 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                 onClick={() => handleNavClick('/login')}
                 className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-teal-700 text-white"
               >
-                <UserCheck className="w-4 h-4" />
-                <span>Masuk Portal</span>
+                <LogIn className="w-4 h-4" />
+                <span>Login</span>
               </button>
             )}
           </div>
@@ -697,6 +685,22 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               }`}
             >
               Galeri Dokumentasi
+            </button>
+
+            {/* PPDB (Disebelah Galeri) */}
+            <button
+              onClick={() => handleNavClick('/ppdb')}
+              className={`text-left px-3 py-2.5 rounded-xl font-bold flex items-center justify-between ${
+                isPpdbActive ? 'bg-amber-100 text-amber-900 font-extrabold' : 'text-amber-800 hover:bg-amber-50/70'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-600" />
+                <span>PPDB 2026/2027</span>
+              </span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500 text-white font-extrabold">
+                Buka
+              </span>
             </button>
 
           </div>

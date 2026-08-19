@@ -175,7 +175,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const [state, setState] = useState<T>(() => {
       try {
         const saved = localStorage.getItem(`school_app_${key}`);
-        return saved ? JSON.parse(saved) : initialValue;
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (typeof initialValue === 'object' && initialValue !== null && !Array.isArray(initialValue)) {
+            return { ...initialValue, ...parsed };
+          }
+          return parsed;
+        }
+        return initialValue;
       } catch {
         return initialValue;
       }
