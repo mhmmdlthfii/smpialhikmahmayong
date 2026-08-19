@@ -27,6 +27,7 @@ import {
   NavItem,
   HeroSlide,
   WebsiteSettings,
+  MediaAsset,
   AuditLogEntry
 } from '../types';
 
@@ -1350,5 +1351,137 @@ export const initialAuditLogs: AuditLogEntry[] = [
     ipAddress: '192.168.1.1',
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
     timestamp: '2026-02-18 10:00:00 WIB'
+  }
+];
+
+// ==========================================
+// 13. MEDIA ASSETS (WordPress-Style Site Drive)
+// ==========================================
+export const initialMediaAssets: MediaAsset[] = [
+  {
+    id: 'med-1',
+    title: 'Banner Header Resmi SMP Islam Al Hikmah Mayong (1343x342)',
+    fileName: 'header-banner-al-hikmah-1343x342.jpg',
+    fileSize: '320 KB',
+    dimensions: '1343 x 342 px',
+    mimeType: 'image/jpeg',
+    category: 'banner',
+    url: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1343&h=342&fit=crop&q=85',
+    uploadedAt: '18 Feb 2026 09:15',
+    uploadedBy: 'Muhammad Luthfi, S.Pd., Gr',
+    altText: 'Header Banner Resmi SMP Islam Al Hikmah Mayong',
+    tags: ['header', 'banner', 'resmi', 'utama']
+  },
+  {
+    id: 'med-2',
+    title: 'Hero Carousel - Siswa Santri & Pembelajaran Qurani',
+    fileName: 'hero-slide-santri-qurani.jpg',
+    fileSize: '410 KB',
+    dimensions: '1920 x 1080 px',
+    mimeType: 'image/jpeg',
+    category: 'banner',
+    url: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1200&auto=format&fit=crop&q=80',
+    uploadedAt: '17 Feb 2026 14:20',
+    uploadedBy: 'Admin CMS',
+    altText: 'Kegiatan Pembelajaran Qurani dan Tahfidz',
+    tags: ['hero', 'slide', 'tahfidz', 'santri']
+  },
+  {
+    id: 'med-3',
+    title: 'Hero Carousel - Laboratorium Komputer & Sains',
+    fileName: 'hero-lab-komputer-sains.jpg',
+    fileSize: '385 KB',
+    dimensions: '1920 x 1080 px',
+    mimeType: 'image/jpeg',
+    category: 'banner',
+    url: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&auto=format&fit=crop&q=80',
+    uploadedAt: '16 Feb 2026 10:45',
+    uploadedBy: 'Admin CMS',
+    altText: 'Praktikum Komputer dan Literasi Digital',
+    tags: ['hero', 'lab', 'komputer', 'sains']
+  },
+  {
+    id: 'med-4',
+    title: 'Hero Carousel - Diskusi Aktif Siswa SMP',
+    fileName: 'hero-diskusi-santri.jpg',
+    fileSize: '440 KB',
+    dimensions: '1920 x 1080 px',
+    mimeType: 'image/jpeg',
+    category: 'banner',
+    url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&auto=format&fit=crop&q=80',
+    uploadedAt: '15 Feb 2026 11:30',
+    uploadedBy: 'Admin CMS',
+    altText: 'Diskusi kelompok siswa berprestasi',
+    tags: ['hero', 'diskusi', 'prestasi']
+  },
+  {
+    id: 'med-5',
+    title: 'Logo Resmi SMP Islam Al Hikmah',
+    fileName: 'logo-smpi-alhikmah-official.png',
+    fileSize: '95 KB',
+    dimensions: '512 x 512 px',
+    mimeType: 'image/png',
+    category: 'logo',
+    url: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=512&auto=format&fit=crop&q=80',
+    uploadedAt: '10 Feb 2026 08:00',
+    uploadedBy: 'Muhammad Luthfi, S.Pd., Gr',
+    altText: 'Logo Resmi SMP Islam Al Hikmah Mayong Jepara',
+    tags: ['logo', 'identitas', 'icon']
+  },
+  {
+    id: 'med-6',
+    title: 'Cover Berita - Juara 1 MTQ Tingkat Kabupaten',
+    fileName: 'berita-juara-mtq-2026.jpg',
+    fileSize: '360 KB',
+    dimensions: '1200 x 800 px',
+    mimeType: 'image/jpeg',
+    category: 'berita',
+    url: 'https://images.unsplash.com/photo-1567057419565-4349c49d8a04?w=800&auto=format&fit=crop&q=80',
+    uploadedAt: '14 Feb 2026 16:10',
+    uploadedBy: 'Admin CMS',
+    altText: 'Penerimaan piala kejuaraan MTQ siswa SMP Islam Al Hikmah',
+    tags: ['berita', 'mtq', 'prestasi']
+  },
+  {
+    id: 'med-7',
+    title: 'Galeri Fasilitas - Perpustakaan Digital & Ruang Baca',
+    fileName: 'galeri-perpustakaan-digital.jpg',
+    fileSize: '295 KB',
+    dimensions: '1280 x 720 px',
+    mimeType: 'image/jpeg',
+    category: 'galeri',
+    url: 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80',
+    uploadedAt: '12 Feb 2026 13:40',
+    uploadedBy: 'Admin CMS',
+    altText: 'Fasilitas perpustakaan dan sudut literasi',
+    tags: ['galeri', 'perpustakaan', 'fasilitas']
+  },
+  {
+    id: 'med-8',
+    title: 'Galeri Kegiatan - Upacara Peringatan Hari Santri Nasional',
+    fileName: 'galeri-hari-santri-upacara.jpg',
+    fileSize: '480 KB',
+    dimensions: '1600 x 900 px',
+    mimeType: 'image/jpeg',
+    category: 'galeri',
+    url: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&auto=format&fit=crop&q=80',
+    uploadedAt: '11 Feb 2026 09:00',
+    uploadedBy: 'Admin CMS',
+    altText: 'Upacara bendera santri bersarung dan berpeci',
+    tags: ['galeri', 'upacara', 'santri', 'kegiatan']
+  },
+  {
+    id: 'med-9',
+    title: 'Prestasi - Medali Emas Olimpiade Sains Nasional (OSN)',
+    fileName: 'prestasi-osn-medali-emas.jpg',
+    fileSize: '310 KB',
+    dimensions: '1000 x 750 px',
+    mimeType: 'image/jpeg',
+    category: 'prestasi',
+    url: 'https://images.unsplash.com/photo-1579389083078-4e7018379f7e?w=800&auto=format&fit=crop&q=80',
+    uploadedAt: '09 Feb 2026 15:20',
+    uploadedBy: 'Admin CMS',
+    altText: 'Penyerahan medali olimpiade sains',
+    tags: ['prestasi', 'osn', 'sains', 'emas']
   }
 ];

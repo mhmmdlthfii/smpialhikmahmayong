@@ -27,6 +27,8 @@ import {
   NavItem,
   HeroSlide,
   WebsiteSettings,
+  MediaAsset,
+  MediaCategory,
   AuditLogEntry
 } from '../types';
 import {
@@ -57,6 +59,7 @@ import {
   initialNavItems,
   initialHeroSlides,
   initialWebsiteSettings,
+  initialMediaAssets,
   initialAuditLogs
 } from '../data/initialData';
 
@@ -147,6 +150,13 @@ interface AppContextType {
   updateWebsiteSettings: (settings: Partial<WebsiteSettings>) => void;
   updateNavItems: (items: NavItem[]) => void;
 
+  // Media Library & Site Storage (Drive Situs)
+  mediaAssets: MediaAsset[];
+  addMediaAsset: (asset: Omit<MediaAsset, 'id' | 'uploadedAt'>) => MediaAsset;
+  updateMediaAsset: (id: string, updates: Partial<MediaAsset>) => void;
+  deleteMediaAsset: (id: string) => void;
+  uploadMediaFile: (file: File, category?: MediaCategory, customTitle?: string) => Promise<MediaAsset>;
+
   // Audit Log
   auditLogs: AuditLogEntry[];
   logAudit: (log: Omit<AuditLogEntry, 'id' | 'timestamp' | 'ipAddress' | 'userAgent'>) => void;
@@ -227,6 +237,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [navItems, setNavItems] = usePersistentState<NavItem[]>('nav_items', initialNavItems);
   const [heroSlides, setHeroSlides] = usePersistentState<HeroSlide[]>('hero_slides', initialHeroSlides);
   const [websiteSettings, setWebsiteSettings] = usePersistentState<WebsiteSettings>('website_settings', initialWebsiteSettings);
+  const [mediaAssets, setMediaAssets] = usePersistentState<MediaAsset[]>('media_assets', initialMediaAssets);
   const [auditLogs, setAuditLogs] = usePersistentState<AuditLogEntry[]>('audit_logs', initialAuditLogs);
 
   // Helper to generate crypto-secure token string
@@ -760,6 +771,121 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setHeroSlides(ordered);
   };
 
+  // Media Library & Site Storage (Drive Situs)
+  const addMediaAsset = (assetData: Omit<MediaAsset, 'id' | 'uploadedAt'>): MediaAsset => {
+    const now = new Date();
+    const formattedDate = `${now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })} ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+    const newAsset: MediaAsset = {
+      id: `med-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      uploadedAt: formattedDate,
+      ...assetData
+    };
+    setMediaAssets((prev) => [newAsset, ...prev]);
+    logAudit({
+      userId: 'usr-admin',
+      userName: 'Administrator',
+      userRole: 'ADMIN',
+      action: 'CREATE',
+      module: 'CMS',
+      recordId: newAsset.id,
+      description: `Menyimpan Aset Media ke Drive Situs: ${newAsset.title} (${newAsset.category})`,
+      newValue: JSON.stringify({ title: newAsset.title, fileName: newAsset.fileName, size: newAsset.fileSize })
+    });
+    return newAsset;
+  };
+
+  const updateMediaAsset = (id: string, updates: Partial<MediaAsset>) => {
+    setMediaAssets((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
+    );
+    logAudit({
+      userId: 'usr-admin',
+      userName: 'Administrator',
+      userRole: 'ADMIN',
+      action: 'UPDATE',
+      module: 'CMS',
+      recordId: id,
+      description: `Memperbarui metadata media ID: ${id}`,
+      newValue: JSON.stringify(updates)
+    });
+  };
+
+  const deleteMediaAsset = (id: string) => {
+    const target = mediaAssets.find((a) => a.id === id);
+    setMediaAssets((prev) => prev.filter((a) => a.id !== id));
+    logAudit({
+      userId: 'usr-admin',
+      userName: 'Administrator',
+      userRole: 'ADMIN',
+      action: 'DELETE',
+      module: 'CMS',
+      recordId: id,
+      description: `Menghapus Aset Media dari Drive Situs: ${target?.title || id}`
+    });
+  };
+
+  const uploadMediaFile = (file: File, category: MediaCategory = 'umum', customTitle?: string): Promise<MediaAsset> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        if (!dataUrl) {
+          reject(new Error('Gagal membaca file gambar'));
+          return;
+        }
+
+        // Format file size
+        let sizeFormatted = '';
+        if (file.size < 1024) {
+          sizeFormatted = `${file.size} B`;
+        } else if (file.size < 1024 * 1024) {
+          sizeFormatted = `${(file.size / 1024).toFixed(1)} KB`;
+        } else {
+          sizeFormatted = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+        }
+
+        // Extract image dimensions
+        const img = new Image();
+        img.onload = () => {
+          const dims = `${img.naturalWidth} x ${img.naturalHeight} px`;
+          const title = customTitle || file.name.replace(/\.[^/.]+$/, '');
+          const newAsset = addMediaAsset({
+            title,
+            fileName: file.name,
+            fileSize: sizeFormatted,
+            dimensions: dims,
+            mimeType: file.type || 'image/jpeg',
+            category,
+            url: dataUrl,
+            uploadedBy: 'Administrator',
+            altText: title,
+            tags: [category]
+          });
+          resolve(newAsset);
+        };
+        img.onerror = () => {
+          // Fallback if not an image or SVG
+          const title = customTitle || file.name.replace(/\.[^/.]+$/, '');
+          const newAsset = addMediaAsset({
+            title,
+            fileName: file.name,
+            fileSize: sizeFormatted,
+            mimeType: file.type || 'application/octet-stream',
+            category,
+            url: dataUrl,
+            uploadedBy: 'Administrator',
+            altText: title,
+            tags: [category]
+          });
+          resolve(newAsset);
+        };
+        img.src = dataUrl;
+      };
+      reader.onerror = () => reject(new Error('Gagal mengunggah file'));
+      reader.readAsDataURL(file);
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -838,6 +964,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         reorderHeroSlides,
         updateWebsiteSettings,
         updateNavItems,
+
+        // Media Storage (Drive Situs)
+        mediaAssets,
+        addMediaAsset,
+        updateMediaAsset,
+        deleteMediaAsset,
+        uploadMediaFile,
 
         auditLogs,
         logAudit

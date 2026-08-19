@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { SystemService, NewsItem, EventItem, HeroSlide } from '../../types';
+import { SystemService, NewsItem, EventItem, HeroSlide, MediaCategory } from '../../types';
 import {
   Settings,
   Globe,
@@ -22,8 +22,14 @@ import {
   Check,
   Eye,
   Sliders,
-  Link as LinkIcon
+  Link as LinkIcon,
+  HardDrive,
+  FolderOpen,
+  Upload,
+  FileImage
 } from 'lucide-react';
+import { MediaLibraryManager } from './MediaLibraryManager';
+import { MediaPickerModal } from './MediaPickerModal';
 
 export const CMSModule: React.FC = () => {
   const { user, activeRole } = useAuth();
@@ -47,11 +53,20 @@ export const CMSModule: React.FC = () => {
     addHeroSlide,
     updateHeroSlide,
     deleteHeroSlide,
-    reorderHeroSlides
+    reorderHeroSlides,
+    mediaAssets,
+    uploadMediaFile
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'identity' | 'slides' | 'news' | 'services' | 'navigation'>('slides');
+  const [activeTab, setActiveTab] = useState<'media' | 'slides' | 'identity' | 'news' | 'services' | 'navigation'>('media');
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+
+  // Media Picker Dialog State
+  const [showMediaPicker, setShowMediaPicker] = useState<boolean>(false);
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<'header_banner' | 'school_logo' | 'headmaster_signature' | 'slide_image' | 'news_cover' | null>(null);
+  const [mediaPickerTitle, setMediaPickerTitle] = useState<string>('Pilih Gambar dari Drive Situs');
+  const [mediaPickerCategory, setMediaPickerCategory] = useState<MediaCategory | undefined>(undefined);
+  const [mediaPickerAspect, setMediaPickerAspect] = useState<string | undefined>(undefined);
 
   // Identity Form State
   const [identityForm, setIdentityForm] = useState(websiteSettings);
@@ -264,6 +279,35 @@ export const CMSModule: React.FC = () => {
     setShowServiceModal(false);
   };
 
+  // Open Media Picker Helper
+  const openMediaPicker = (
+    target: 'header_banner' | 'school_logo' | 'headmaster_signature' | 'slide_image' | 'news_cover',
+    modalTitle: string,
+    category?: MediaCategory,
+    aspect?: string
+  ) => {
+    setMediaPickerTarget(target);
+    setMediaPickerTitle(modalTitle);
+    setMediaPickerCategory(category);
+    setMediaPickerAspect(aspect);
+    setShowMediaPicker(true);
+  };
+
+  // Handle Selected Media from Modal
+  const handleMediaSelected = (url: string) => {
+    if (mediaPickerTarget === 'header_banner') {
+      setIdentityForm((prev) => ({ ...prev, headerBannerUrl: url, headerDisplayMode: 'photo_banner' }));
+    } else if (mediaPickerTarget === 'school_logo') {
+      setIdentityForm((prev) => ({ ...prev, schoolLogoUrl: url }));
+    } else if (mediaPickerTarget === 'headmaster_signature') {
+      setIdentityForm((prev) => ({ ...prev, headmasterSignatureUrl: url }));
+    } else if (mediaPickerTarget === 'slide_image') {
+      setSlideImageUrl(url);
+    } else if (mediaPickerTarget === 'news_cover') {
+      setNewsImageUrl(url);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200 text-teal-950">
       
@@ -279,12 +323,26 @@ export const CMSModule: React.FC = () => {
             </h2>
           </div>
           <p className="text-xs text-slate-600 mt-1">
-            Konfigurasi identitas sekolah, foto slider hero carousel, publikasi berita, dan pengelolaan tautan sistem.
+            Pusat penyimpanan Drive media gambar internal, konfigurasi banner header 1343x342 px, hero carousel, berita, dan identitas sekolah.
           </p>
         </div>
 
         {/* Tab Actions */}
         <div className="flex flex-wrap items-center gap-2">
+          
+          {/* TAB 0: MEDIA LIBRARY (DRIVE SITUS) */}
+          <button
+            onClick={() => setActiveTab('media')}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+              activeTab === 'media'
+                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
+                : 'glass-panel text-teal-900 hover:text-teal-950 hover:bg-teal-50 border-teal-200'
+            }`}
+          >
+            <HardDrive className="w-3.5 h-3.5 text-amber-300" />
+            <span>Drive Media ({mediaAssets.length})</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('slides')}
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
@@ -347,6 +405,13 @@ export const CMSModule: React.FC = () => {
         <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200 text-teal-800 text-xs flex items-center gap-2 animate-in fade-in shadow-xs">
           <CheckCircle2 className="w-4 h-4 text-teal-600" />
           <span>{saveSuccess}</span>
+        </div>
+      )}
+
+      {/* TAB 0: DRIVE & MEDIA LIBRARY (WORDPRESS STYLE STORAGE) */}
+      {activeTab === 'media' && (
+        <div className="space-y-4">
+          <MediaLibraryManager />
         </div>
       )}
 
@@ -568,32 +633,72 @@ export const CMSModule: React.FC = () => {
               </div>
             </div>
 
-            {/* Input URL & Presets */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
-              <div>
-                <label className="block font-bold text-teal-950 mb-1">
-                  URL Foto Banner Header (Direct Image Link)
+            {/* Input URL & Media Picker Controls */}
+            <div className="space-y-3 pt-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openMediaPicker('header_banner', 'Pilih Banner Header (1343 x 342)', 'banner', '1343:342')}
+                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-teal-700 hover:bg-teal-800 text-white flex items-center gap-2 shadow-xs cursor-pointer"
+                >
+                  <HardDrive className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Pilih dari Drive Media Situs</span>
+                </button>
+
+                <label className="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-teal-300 text-teal-900 hover:bg-teal-50 flex items-center gap-2 shadow-xs cursor-pointer">
+                  <Upload className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Unggah Banner File (1343x342 px)</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const asset = await uploadMediaFile(file, 'banner', 'Banner Header Utama Navigasi');
+                          setIdentityForm((prev) => ({
+                            ...prev,
+                            headerBannerUrl: asset.url,
+                            headerDisplayMode: 'photo_banner'
+                          }));
+                          setSaveSuccess('Banner header berhasil diunggah ke Drive dan dipilih!');
+                          setTimeout(() => setSaveSuccess(null), 3000);
+                        } catch (err) {
+                          alert('Gagal mengunggah file.');
+                        }
+                      }
+                    }}
+                  />
                 </label>
-                <input
-                  type="text"
-                  placeholder="https://.../banner-1343x342.jpg"
-                  value={identityForm.headerBannerUrl || ''}
-                  onChange={(e) => setIdentityForm({ ...identityForm, headerBannerUrl: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs focus:ring-2 focus:ring-teal-500"
-                />
               </div>
 
-              <div>
-                <label className="block font-bold text-teal-950 mb-1">
-                  Teks Alternatif / Alt Text Banner
-                </label>
-                <input
-                  type="text"
-                  placeholder="Header Banner Resmi SMP Islam Al Hikmah Mayong"
-                  value={identityForm.headerBannerAlt || ''}
-                  onChange={(e) => setIdentityForm({ ...identityForm, headerBannerAlt: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block font-bold text-teal-950 mb-1">
+                    URL Foto Banner Header (Direct Link / Data URL)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="https://.../banner-1343x342.jpg atau pilih dari drive"
+                    value={identityForm.headerBannerUrl || ''}
+                    onChange={(e) => setIdentityForm({ ...identityForm, headerBannerUrl: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs focus:ring-2 focus:ring-teal-500 font-mono text-[11px]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-teal-950 mb-1">
+                    Teks Alternatif / Alt Text Banner
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Header Banner Resmi SMP Islam Al Hikmah Mayong"
+                    value={identityForm.headerBannerAlt || ''}
+                    onChange={(e) => setIdentityForm({ ...identityForm, headerBannerAlt: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
+                  />
+                </div>
               </div>
             </div>
 
@@ -715,6 +820,67 @@ export const CMSModule: React.FC = () => {
                   onChange={(e) => setIdentityForm({ ...identityForm, address: e.target.value })}
                   className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 font-medium shadow-xs"
                 />
+              </div>
+
+              {/* Logo Sekolah & Tanda Tangan Kepsek with Drive Pickers */}
+              <div className="p-4 rounded-2xl bg-teal-50/70 border border-teal-100 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-teal-950">Logo Resmi Sekolah</label>
+                  <button
+                    type="button"
+                    onClick={() => openMediaPicker('school_logo', 'Pilih Logo Sekolah dari Drive', 'logo', '1:1')}
+                    className="text-[11px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 cursor-pointer"
+                  >
+                    <HardDrive className="w-3 h-3 text-amber-500" />
+                    <span>Pilih dari Drive</span>
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl border border-teal-200 bg-white p-1 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                    {identityForm.schoolLogoUrl ? (
+                      <img src={identityForm.schoolLogoUrl} alt="Logo" className="w-full h-full object-contain" />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-teal-400" />
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="URL Logo atau pilih dari Drive"
+                    value={identityForm.schoolLogoUrl || ''}
+                    onChange={(e) => setIdentityForm({ ...identityForm, schoolLogoUrl: e.target.value })}
+                    className="flex-1 px-3 py-2 rounded-xl bg-white border border-teal-200 text-teal-950 font-mono text-[11px] shadow-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-teal-50/70 border border-teal-100 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-teal-950">Tanda Tangan Elektronik Kepala Sekolah (PNG Transparan)</label>
+                  <button
+                    type="button"
+                    onClick={() => openMediaPicker('headmaster_signature', 'Pilih Tanda Tangan Kepsek dari Drive', 'dokumen', '3:2')}
+                    className="text-[11px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 cursor-pointer"
+                  >
+                    <HardDrive className="w-3 h-3 text-amber-500" />
+                    <span>Pilih dari Drive</span>
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-12 rounded-xl border border-teal-200 bg-white p-1 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden">
+                    {identityForm.headmasterSignatureUrl ? (
+                      <img src={identityForm.headmasterSignatureUrl} alt="TTD" className="w-full h-full object-contain" />
+                    ) : (
+                      <FileImage className="w-5 h-5 text-teal-400" />
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="URL Tanda Tangan atau pilih dari Drive"
+                    value={identityForm.headmasterSignatureUrl || ''}
+                    onChange={(e) => setIdentityForm({ ...identityForm, headmasterSignatureUrl: e.target.value })}
+                    className="flex-1 px-3 py-2 rounded-xl bg-white border border-teal-200 text-teal-950 font-mono text-[11px] shadow-xs"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -924,22 +1090,61 @@ export const CMSModule: React.FC = () => {
 
             <form onSubmit={handleSaveSlide} className="space-y-4 text-xs">
               
-              {/* Image URL with Presets */}
-              <div className="space-y-1.5">
-                <label className="block font-bold text-teal-950">URL Foto Slide *</label>
-                <input
-                  type="url"
-                  required
-                  value={slideImageUrl}
-                  onChange={(e) => setSlideImageUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3 py-2.5 rounded-xl bg-white border border-teal-200 text-teal-950 shadow-xs font-mono text-[11px]"
-                />
+              {/* Image URL & Drive Media Picker */}
+              <div className="space-y-2 p-3 bg-teal-50/60 rounded-2xl border border-teal-100">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-teal-950">Foto Banner Slide *</label>
+                  <button
+                    type="button"
+                    onClick={() => openMediaPicker('slide_image', 'Pilih Gambar Banner Hero dari Drive', 'banner', '16:9')}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-700 hover:bg-teal-800 text-white flex items-center gap-1.5 shadow-xs cursor-pointer"
+                  >
+                    <HardDrive className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Pilih dari Drive Situs</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    required
+                    value={slideImageUrl}
+                    onChange={(e) => setSlideImageUrl(e.target.value)}
+                    placeholder="Pilih dari Drive atau masukkan URL foto..."
+                    className="flex-1 px-3 py-2 rounded-xl bg-white border border-teal-200 text-teal-950 shadow-xs font-mono text-[11px]"
+                  />
+                  <label className="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-teal-300 text-teal-900 hover:bg-teal-50 flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0">
+                    <Upload className="w-3.5 h-3.5 text-teal-600" />
+                    <span>Unggah File</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const asset = await uploadMediaFile(file, 'banner', slideTitle || 'Slide Hero Banner');
+                            setSlideImageUrl(asset.url);
+                          } catch (err) {
+                            alert('Gagal mengunggah file.');
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {slideImageUrl && (
+                  <div className="relative rounded-xl overflow-hidden aspect-21/9 bg-slate-900 border border-teal-200">
+                    <img src={slideImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
                 
                 {/* Image Presets */}
                 <div className="pt-1">
                   <span className="text-[10px] font-semibold text-slate-500 block mb-1">
-                    Atau pilih foto contoh resolusi tinggi:
+                    Atau pilih preset cepat:
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                     {imagePresets.map((preset, idx) => (
@@ -1136,15 +1341,55 @@ export const CMSModule: React.FC = () => {
                 </select>
               </div>
 
-              <div>
-                <label className="block font-bold text-teal-950 mb-1">URL Gambar Header</label>
-                <input
-                  type="url"
-                  value={newsImageUrl}
-                  onChange={(e) => setNewsImageUrl(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-teal-200 text-teal-950 shadow-xs"
-                />
+              {/* News Cover Image with Drive Picker */}
+              <div className="space-y-2 p-3 bg-teal-50/60 rounded-2xl border border-teal-100">
+                <div className="flex items-center justify-between">
+                  <label className="block font-bold text-teal-950">Foto Sampul Berita</label>
+                  <button
+                    type="button"
+                    onClick={() => openMediaPicker('news_cover', 'Pilih Sampul Berita dari Drive', 'berita', '16:9')}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-700 hover:bg-teal-800 text-white flex items-center gap-1.5 shadow-xs cursor-pointer"
+                  >
+                    <HardDrive className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Pilih dari Drive</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={newsImageUrl}
+                    onChange={(e) => setNewsImageUrl(e.target.value)}
+                    placeholder="URL Gambar atau pilih dari Drive..."
+                    className="flex-1 px-3 py-2 rounded-xl bg-white border border-teal-200 text-teal-950 shadow-xs font-mono text-[11px]"
+                  />
+                  <label className="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-teal-300 text-teal-900 hover:bg-teal-50 flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0">
+                    <Upload className="w-3.5 h-3.5 text-teal-600" />
+                    <span>Unggah File</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const asset = await uploadMediaFile(file, 'berita', newsTitle || 'Sampul Berita');
+                            setNewsImageUrl(asset.url);
+                          } catch (err) {
+                            alert('Gagal mengunggah file.');
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+
+                {newsImageUrl && (
+                  <div className="relative rounded-xl overflow-hidden aspect-16/9 bg-slate-900 border border-teal-200">
+                    <img src={newsImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
 
               <div>
@@ -1260,6 +1505,16 @@ export const CMSModule: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Global Media Picker Modal */}
+      <MediaPickerModal
+        isOpen={showMediaPicker}
+        onClose={() => setShowMediaPicker(false)}
+        onSelect={handleMediaSelected}
+        title={mediaPickerTitle}
+        defaultCategory={mediaPickerCategory}
+        recommendedAspect={mediaPickerAspect}
+      />
 
     </div>
   );

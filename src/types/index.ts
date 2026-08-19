@@ -593,6 +593,35 @@ export interface WebsiteSettings {
 }
 
 // ------------------------------------------
+// Media Library & Asset Storage (Drive Situs)
+// ------------------------------------------
+
+export type MediaCategory =
+  | 'banner'
+  | 'logo'
+  | 'berita'
+  | 'galeri'
+  | 'prestasi'
+  | 'guru'
+  | 'dokumen'
+  | 'umum';
+
+export interface MediaAsset {
+  id: string;
+  title: string;
+  fileName: string;
+  fileSize: string;
+  dimensions?: string;
+  mimeType: string;
+  category: MediaCategory;
+  url: string; // Base64 data URL or permanent URL
+  uploadedAt: string;
+  uploadedBy?: string;
+  altText?: string;
+  tags?: string[];
+}
+
+// ------------------------------------------
 // Audit Log
 // ------------------------------------------
 
