@@ -36,6 +36,21 @@ export const EPresensiModule: React.FC = () => {
   const [scanStatus, setScanStatus] = useState<DailyAttendance['status']>('HADIR');
   const [scanSuccessMessage, setScanSuccessMessage] = useState<string | null>(null);
 
+  // Synchronize tab with Secondary Sidebar events
+  useEffect(() => {
+    const handleSubTabEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ module: string; tab: string }>;
+      if (customEvent.detail?.module === 'e-presensi' && customEvent.detail?.tab) {
+        const tab = customEvent.detail.tab;
+        if (['live_qr', 'history', 'notifications'].includes(tab)) {
+          setActiveTab(tab as any);
+        }
+      }
+    };
+    window.addEventListener('portal-subtab-change', handleSubTabEvent);
+    return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
+  }, []);
+
   // Dynamic QR auto-refresh timer
   useEffect(() => {
     const timer = setInterval(() => {

@@ -38,6 +38,21 @@ export const EJurnalModule: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
+  // Synchronize tab with Secondary Sidebar events
+  React.useEffect(() => {
+    const handleSubTabEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ module: string; tab: string }>;
+      if (customEvent.detail?.module === 'e-jurnal' && customEvent.detail?.tab) {
+        const tab = customEvent.detail.tab;
+        if (['journals', 'schedules', 'grades'].includes(tab)) {
+          setActiveTab(tab as any);
+        }
+      }
+    };
+    window.addEventListener('portal-subtab-change', handleSubTabEvent);
+    return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
+  }, []);
+
   // New Journal Entry Form State
   const [newScheduleId, setNewScheduleId] = useState<string>(teachingSchedules[0]?.id || '');
   const [newClassId, setNewClassId] = useState<string>(classes[0]?.id || '');

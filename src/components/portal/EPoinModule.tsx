@@ -34,6 +34,21 @@ export const EPoinModule: React.FC = () => {
   const [filterType, setFilterType] = useState<'ALL' | 'PRESTASI' | 'PELANGGARAN'>('ALL');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
+  // Synchronize tab with Secondary Sidebar events
+  React.useEffect(() => {
+    const handleSubTabEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ module: string; tab: string }>;
+      if (customEvent.detail?.module === 'e-poin' && customEvent.detail?.tab) {
+        const tab = customEvent.detail.tab;
+        if (['transactions', 'leaderboard', 'categories'].includes(tab)) {
+          setActiveTab(tab as any);
+        }
+      }
+    };
+    window.addEventListener('portal-subtab-change', handleSubTabEvent);
+    return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
+  }, []);
+
   // Form State
   const [selectedStudentId, setSelectedStudentId] = useState<string>(students[0]?.id || '');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(pointCategories[0]?.id || '');

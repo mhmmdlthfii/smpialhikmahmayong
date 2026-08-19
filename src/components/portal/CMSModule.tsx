@@ -61,6 +61,21 @@ export const CMSModule: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'media' | 'slides' | 'identity' | 'news' | 'services' | 'navigation'>('media');
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
+  // Synchronize tab with Secondary Sidebar events
+  React.useEffect(() => {
+    const handleSubTabEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ module: string; tab: string }>;
+      if (customEvent.detail?.module === 'cms' && customEvent.detail?.tab) {
+        const tab = customEvent.detail.tab;
+        if (['media', 'slides', 'identity', 'news', 'services', 'navigation'].includes(tab)) {
+          setActiveTab(tab as any);
+        }
+      }
+    };
+    window.addEventListener('portal-subtab-change', handleSubTabEvent);
+    return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
+  }, []);
+
   // Media Picker Dialog State
   const [showMediaPicker, setShowMediaPicker] = useState<boolean>(false);
   const [mediaPickerTarget, setMediaPickerTarget] = useState<'header_banner' | 'school_logo' | 'headmaster_signature' | 'slide_image' | 'news_cover' | null>(null);

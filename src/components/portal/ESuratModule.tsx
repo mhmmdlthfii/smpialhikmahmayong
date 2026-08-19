@@ -32,6 +32,21 @@ export const ESuratModule: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string>('ALL');
   const [selectedLetterForModal, setSelectedLetterForModal] = useState<Letter | null>(null);
 
+  // Synchronize tab with Secondary Sidebar events
+  React.useEffect(() => {
+    const handleSubTabEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ module: string; tab: string }>;
+      if (customEvent.detail?.module === 'e-surat' && customEvent.detail?.tab) {
+        const tab = customEvent.detail.tab;
+        if (['outbox', 'inbox', 'create', 'pending_sign'].includes(tab)) {
+          setActiveTab(tab as any);
+        }
+      }
+    };
+    window.addEventListener('portal-subtab-change', handleSubTabEvent);
+    return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
+  }, []);
+
   // Form State for Creating New Letter
   const [title, setTitle] = useState('');
   const [type, setType] = useState<LetterType>('SURAT_KETERANGAN_AKTIF');
