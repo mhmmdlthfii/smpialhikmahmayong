@@ -1,30 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 import { useApp } from '../../context/AppContext';
 import {
   Menu,
   X,
   ShieldCheck,
-  UserCheck,
   LogIn,
   LogOut,
   ChevronDown,
   LayoutDashboard,
   Sparkles,
-  School,
-  DollarSign,
   Users,
   BookOpen,
-  GraduationCap,
   Calendar,
   Award,
   Newspaper,
   FileText,
   Clock,
-  FolderDown,
   Image as ImageIcon,
-  ChevronRight
+  Compass,
+  MessageSquareQuote,
+  Megaphone,
+  CheckCircle2,
+  CalendarDays,
+  Shield
 } from 'lucide-react';
 
 interface HeaderNavbarProps {
@@ -40,16 +39,17 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   // Desktop Dropdown Open States
-  const [activeDropdown, setActiveDropdown] = useState<'bosp' | 'kesiswaan' | 'akademik' | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<'bosp' | 'kesiswaan' | 'kurikulum' | 'publikasi' | null>(null);
 
   // Mobile Accordion States
   const [mobileBospOpen, setMobileBospOpen] = useState(false);
   const [mobileKesiswaanOpen, setMobileKesiswaanOpen] = useState(false);
-  const [mobileAkademikOpen, setMobileAkademikOpen] = useState(false);
+  const [mobileKurikulumOpen, setMobileKurikulumOpen] = useState(false);
+  const [mobilePublikasiOpen, setMobilePublikasiOpen] = useState(false);
 
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = (menu: 'bosp' | 'kesiswaan' | 'akademik') => {
+  const handleMouseEnter = (menu: 'bosp' | 'kesiswaan' | 'kurikulum' | 'publikasi') => {
     if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
     setActiveDropdown(menu);
   };
@@ -89,57 +89,62 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
     }
   };
 
-  // Check if current route matches any section for active styling
-  const isBospActive = currentPath.startsWith('/bosp');
-  const isKesiswaanActive = currentPath === '/jurnalistik' || currentPath === '/prestasi' || currentPath === '/agenda';
-  const isAkademikActive = currentPath.startsWith('/akademik');
+  // Check active routes
   const isProfilActive = currentPath === '/profil';
-  const isPengajarActive = currentPath === '/pengajar' || currentPath === '/guru';
-  const isGaleriActive = currentPath === '/galeri';
+  const isBospActive = currentPath.startsWith('/bosp');
+  const isKesiswaanActive = currentPath.startsWith('/kesiswaan');
+  const isKurikulumActive = currentPath.startsWith('/akademik') || currentPath.startsWith('/kurikulum');
+  const isGuruActive = currentPath === '/pengajar' || currentPath === '/guru';
+  const isPublikasiActive =
+    currentPath === '/berita' ||
+    currentPath === '/agenda' ||
+    currentPath === '/info' ||
+    currentPath === '/galeri' ||
+    currentPath === '/kata-mereka' ||
+    currentPath === '/testimoni' ||
+    currentPath === '/jurnalistik';
   const isPpdbActive = currentPath === '/ppdb';
 
   const defaultBannerUrl = 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1343&h=342&fit=crop&q=85';
   const activeHeaderBanner = websiteSettings.headerBannerUrl || defaultBannerUrl;
 
   return (
-    <header className="sticky-header-nav sticky top-0 z-50 w-full bg-white/75 hover:bg-white/85 backdrop-blur-2xl backdrop-saturate-200 border-b border-white/60 shadow-xs shadow-teal-950/5 transition-all duration-300">
+    <header className="sticky-header-nav sticky top-0 z-50 w-full bg-white/80 hover:bg-white/90 backdrop-blur-2xl backdrop-saturate-200 border-b border-teal-100/60 shadow-xs shadow-teal-950/5 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Rectangular Photo Header Banner (Configurable via Admin CMS) */}
+          {/* Logo Brand without outline box / container border */}
           <button
             onClick={() => handleNavClick('/')}
-            className="flex items-center group text-left cursor-pointer focus:outline-none py-1"
+            className="flex items-center group text-left cursor-pointer focus:outline-none py-1 transition-transform duration-200 hover:scale-[1.01]"
             title={`Beranda - ${websiteSettings.schoolName}`}
           >
-            <div className="relative overflow-hidden rounded-xl border border-teal-100/90 bg-white/70 shadow-xs group-hover:shadow-md group-hover:border-teal-300 transition-all duration-200 p-0.5">
-              <img
-                src={activeHeaderBanner}
-                alt={websiteSettings.headerBannerAlt || websiteSettings.schoolName}
-                className="h-10 sm:h-12 md:h-13 lg:h-14 w-auto max-w-[210px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[440px] object-contain object-left rounded-lg transition-transform duration-200 group-hover:scale-[1.01]"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = defaultBannerUrl;
-                }}
-              />
-            </div>
+            <img
+              src={activeHeaderBanner}
+              alt={websiteSettings.headerBannerAlt || websiteSettings.schoolName}
+              className="h-10 sm:h-12 md:h-13 lg:h-14 w-auto max-w-[210px] sm:max-w-[290px] md:max-w-[360px] lg:max-w-[430px] object-contain object-left"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = defaultBannerUrl;
+              }}
+            />
           </button>
 
-          {/* Desktop Nav Links */}
+          {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-sm font-medium">
             
-            {/* 1. Profil (Tanpa Dropdown) */}
+            {/* a. Profil */}
             <button
               onClick={() => handleNavClick('/profil')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
                 isProfilActive
                   ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
-                  : 'text-slate-700 hover:text-teal-700 hover:bg-white/60'
+                  : 'text-slate-700 hover:text-teal-700 hover:bg-white/70'
               }`}
             >
               Profil
             </button>
 
-            {/* 2. BOSP (Dropdown: Tahun 2026, 2027, 2028, dst) */}
+            {/* b. BOSP (Dropdown: Tahun ke tahun, Tanpa icon Dollar ($)) */}
             <div
               className="relative"
               onMouseEnter={() => handleMouseEnter('bosp')}
@@ -147,10 +152,10 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
             >
               <button
                 onClick={() => handleNavClick('/bosp?tahun=2026')}
-                className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
                   isBospActive || activeDropdown === 'bosp'
                     ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
-                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/60'
+                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/70'
                 }`}
               >
                 <span>BOSP</span>
@@ -158,12 +163,12 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               </button>
 
               {activeDropdown === 'bosp' && (
-                <div className="absolute left-0 mt-2 w-64 rounded-2xl bg-white/80 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
+                <div className="absolute left-0 mt-2 w-64 rounded-2xl bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
                   <div className="px-3 py-2 border-b border-slate-100/80 mb-1">
-                    <p className="text-[10px] font-extrabold text-teal-600 uppercase tracking-wider">
+                    <p className="text-[10px] font-extrabold text-teal-700 uppercase tracking-wider">
                       Laporan Transparansi BOSP
                     </p>
-                    <p className="text-[11px] text-slate-500 font-medium">Pertanggungjawaban Dana BOS</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Dana Bantuan Operasional Satuan Pendidikan</p>
                   </div>
 
                   <button
@@ -171,7 +176,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                     className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-emerald-600" />
+                      <CalendarDays className="w-4 h-4 text-emerald-600" />
                       <span>Tahun Anggaran 2026</span>
                     </div>
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100/90 text-emerald-800">
@@ -184,7 +189,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                     className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-teal-600" />
+                      <CalendarDays className="w-4 h-4 text-teal-600" />
                       <span>Tahun Anggaran 2027</span>
                     </div>
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100/90 text-slate-600">
@@ -197,7 +202,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                     className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-slate-500" />
+                      <CalendarDays className="w-4 h-4 text-slate-500" />
                       <span>Tahun Anggaran 2028</span>
                     </div>
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-100/90 text-slate-600">
@@ -208,18 +213,18 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               )}
             </div>
 
-            {/* 3. Kesiswaan (Dropdown: Jurnalistik, Prestasi, Agenda) */}
+            {/* c. Kesiswaan (Dropdown: OSIS, Ekstrakurikuler, Prestasi Siswa dan Guru) */}
             <div
               className="relative"
               onMouseEnter={() => handleMouseEnter('kesiswaan')}
               onMouseLeave={handleMouseLeave}
             >
               <button
-                onClick={() => handleNavClick('/prestasi')}
-                className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                onClick={() => handleNavClick('/kesiswaan')}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
                   isKesiswaanActive || activeDropdown === 'kesiswaan'
                     ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
-                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/60'
+                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/70'
                 }`}
               >
                 <span>Kesiswaan</span>
@@ -227,21 +232,32 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               </button>
 
               {activeDropdown === 'kesiswaan' && (
-                <div className="absolute left-0 mt-2 w-64 rounded-2xl bg-white/80 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
+                <div className="absolute left-0 mt-2 w-72 rounded-2xl bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
                   <div className="px-3 py-2 border-b border-slate-100/80 mb-1">
-                    <p className="text-[10px] font-extrabold text-teal-600 uppercase tracking-wider">
-                      Aktivitas & Kreativitas Santri
+                    <p className="text-[10px] font-extrabold text-teal-700 uppercase tracking-wider">
+                      Pengembangan Potensi Santri
                     </p>
                   </div>
 
                   <button
-                    onClick={() => handleNavClick('/jurnalistik')}
+                    onClick={() => handleNavClick('/kesiswaan?tab=osis')}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
-                    <Newspaper className="w-4 h-4 text-teal-600" />
+                    <Shield className="w-4 h-4 text-teal-600 shrink-0" />
                     <div>
-                      <span className="block font-bold">Jurnalistik & Mading</span>
-                      <span className="text-[10px] text-slate-500 font-normal">Karya tulis, majalah & opini santri</span>
+                      <span className="block font-bold">OSIS</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Struktur pengurus & program kerja</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('/kesiswaan?tab=ekskul')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <Compass className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Ekstrakurikuler</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Pramuka, Tahfidz, Robotik, Hadroh, dll</span>
                     </div>
                   </button>
 
@@ -249,50 +265,39 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                     onClick={() => handleNavClick('/prestasi')}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
-                    <Award className="w-4 h-4 text-amber-500" />
+                    <Award className="w-4 h-4 text-amber-500 shrink-0" />
                     <div>
-                      <span className="block font-bold">Prestasi Santri & Guru</span>
-                      <span className="text-[10px] text-slate-500 font-normal">Juara MTQ, sains & kejuaraan</span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => handleNavClick('/agenda')}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
-                  >
-                    <Calendar className="w-4 h-4 text-emerald-600" />
-                    <div>
-                      <span className="block font-bold">Agenda & Kalender</span>
-                      <span className="text-[10px] text-slate-500 font-normal">Jadwal kegiatan kesiswaan</span>
+                      <span className="block font-bold">Prestasi Siswa dan Guru</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Juara MTQ, sains, seni & penghargaan</span>
                     </div>
                   </button>
                 </div>
               )}
             </div>
 
-            {/* 4. Akademik (Dropdown: Berkas KOSP, Jadwal Mengajar, Administrasi Guru) */}
+            {/* d. Kurikulum (Dropdown: Berkas KOSP, Kalender Akademik, Jadwal Mengajar, Administrasi Guru) */}
             <div
               className="relative"
-              onMouseEnter={() => handleMouseEnter('akademik')}
+              onMouseEnter={() => handleMouseEnter('kurikulum')}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 onClick={() => handleNavClick('/akademik/kosp')}
-                className={`flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
-                  isAkademikActive || activeDropdown === 'akademik'
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                  isKurikulumActive || activeDropdown === 'kurikulum'
                     ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
-                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/60'
+                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/70'
                 }`}
               >
-                <span>Akademik</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${activeDropdown === 'akademik' ? 'rotate-180 text-teal-700' : 'text-slate-400'}`} />
+                <span>Kurikulum</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${activeDropdown === 'kurikulum' ? 'rotate-180 text-teal-700' : 'text-slate-400'}`} />
               </button>
 
-              {activeDropdown === 'akademik' && (
-                <div className="absolute left-0 mt-2 w-72 rounded-2xl bg-white/80 backdrop-blur-2xl border border-white/80 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
+              {activeDropdown === 'kurikulum' && (
+                <div className="absolute left-0 mt-2 w-72 rounded-2xl bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
                   <div className="px-3 py-2 border-b border-slate-100/80 mb-1">
-                    <p className="text-[10px] font-extrabold text-teal-600 uppercase tracking-wider">
-                      Layanan Kurikulum & Pembelajaran
+                    <p className="text-[10px] font-extrabold text-teal-700 uppercase tracking-wider">
+                      Kurikulum & Perangkat Pendidikan
                     </p>
                   </div>
 
@@ -300,7 +305,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                     onClick={() => handleNavClick('/akademik/kosp')}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
-                    <BookOpen className="w-4 h-4 text-teal-600" />
+                    <BookOpen className="w-4 h-4 text-teal-600 shrink-0" />
                     <div>
                       <span className="block font-bold">Berkas KOSP</span>
                       <span className="text-[10px] text-slate-500 font-normal">Kurikulum Operasional Satuan Pendidikan</span>
@@ -308,10 +313,21 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                   </button>
 
                   <button
+                    onClick={() => handleNavClick('/akademik/kalender')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Kalender Akademik</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Jadwal semester, PTS/PAS & libur</span>
+                    </div>
+                  </button>
+
+                  <button
                     onClick={() => handleNavClick('/akademik/jadwal')}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
-                    <Clock className="w-4 h-4 text-amber-500" />
+                    <Clock className="w-4 h-4 text-amber-500 shrink-0" />
                     <div>
                       <span className="block font-bold">Jadwal Mengajar</span>
                       <span className="text-[10px] text-slate-500 font-normal">Jadwal pembelajaran harian kelas & guru</span>
@@ -322,7 +338,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
                     onClick={() => handleNavClick('/akademik/administrasi')}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
                   >
-                    <FileText className="w-4 h-4 text-emerald-600" />
+                    <FileText className="w-4 h-4 text-teal-700 shrink-0" />
                     <div>
                       <span className="block font-bold">Administrasi Guru</span>
                       <span className="text-[10px] text-slate-500 font-normal">Modul ajar, silabus, RPP & perangkat ajar</span>
@@ -332,31 +348,114 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               )}
             </div>
 
-            {/* 5. Pengajar (Tanpa Dropdown) */}
+            {/* e. Guru */}
             <button
               onClick={() => handleNavClick('/pengajar')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
-                isPengajarActive
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                isGuruActive
                   ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
-                  : 'text-slate-700 hover:text-teal-700 hover:bg-white/60'
+                  : 'text-slate-700 hover:text-teal-700 hover:bg-white/70'
               }`}
             >
-              Pengajar
+              Guru
             </button>
 
-            {/* 6. Galeri (Tanpa Dropdown) */}
-            <button
-              onClick={() => handleNavClick('/galeri')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
-                isGaleriActive
-                  ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
-                  : 'text-slate-700 hover:text-teal-700 hover:bg-white/60'
-              }`}
+            {/* f. Publikasi (Dropdown: Berita, agenda sekolah, info sekolah, galeri, Kata Mereka, Jurnalistik) */}
+            <div
+              className="relative"
+              onMouseEnter={() => handleMouseEnter('publikasi')}
+              onMouseLeave={handleMouseLeave}
             >
-              Galeri
-            </button>
+              <button
+                onClick={() => handleNavClick('/berita')}
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                  isPublikasiActive || activeDropdown === 'publikasi'
+                    ? 'bg-teal-50/90 text-teal-800 font-extrabold shadow-xs border border-teal-200/60'
+                    : 'text-slate-700 hover:text-teal-700 hover:bg-white/70'
+                }`}
+              >
+                <span>Publikasi</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${activeDropdown === 'publikasi' ? 'rotate-180 text-teal-700' : 'text-slate-400'}`} />
+              </button>
 
-            {/* 7. PPDB Menu Item (Disebelah Galeri) */}
+              {activeDropdown === 'publikasi' && (
+                <div className="absolute left-0 mt-2 w-72 rounded-2xl bg-white/95 backdrop-blur-2xl border border-teal-100 shadow-2xl shadow-teal-950/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-150 ring-1 ring-black/5">
+                  <div className="px-3 py-2 border-b border-slate-100/80 mb-1">
+                    <p className="text-[10px] font-extrabold text-teal-700 uppercase tracking-wider">
+                      Warta, Media & Komunikasi
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => handleNavClick('/berita')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <Newspaper className="w-4 h-4 text-teal-600 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Berita</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Kabar warta & rilis resmi sekolah</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('/agenda')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Agenda Sekolah</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Jadwal kegiatan madrasah & santri</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('/info')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <Megaphone className="w-4 h-4 text-amber-500 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Info Sekolah</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Pengumuman & edaran resmi</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('/galeri')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <ImageIcon className="w-4 h-4 text-purple-600 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Galeri</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Dokumentasi foto sarana & kegiatan</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('/kata-mereka')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <MessageSquareQuote className="w-4 h-4 text-rose-500 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Kata Mereka</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Testimoni wali santri, alumni & tokoh</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('/jurnalistik')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50/80 hover:text-teal-800 transition-colors text-left"
+                  >
+                    <BookOpen className="w-4 h-4 text-teal-700 shrink-0" />
+                    <div>
+                      <span className="block font-bold">Jurnalistik</span>
+                      <span className="text-[10px] text-slate-500 font-normal">Mading santri & karya literasi</span>
+                    </div>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* g. PPDB */}
             <button
               onClick={() => handleNavClick('/ppdb')}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
@@ -371,7 +470,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
 
           </nav>
 
-          {/* Right Action Tools: Minimalist & Elegant Action Pills */}
+          {/* Right Action Tools: E-TTD & Auth */}
           <div className="hidden sm:flex items-center gap-2">
             
             {/* Quick Verification Button (E-TTD) */}
@@ -478,7 +577,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
             )}
           </div>
 
-          {/* Mobile Menu Trigger & Action Pills */}
+          {/* Mobile Menu Trigger */}
           <div className="flex items-center gap-1.5 lg:hidden">
             <button
               onClick={() => handleNavClick('/verify')}
@@ -524,7 +623,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white/85 backdrop-blur-2xl border-b border-white/80 px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-200 shadow-xl max-h-[85vh] overflow-y-auto ring-1 ring-black/5">
+        <div className="lg:hidden bg-white/95 backdrop-blur-2xl border-b border-teal-100 px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top-2 duration-200 shadow-xl max-h-[85vh] overflow-y-auto ring-1 ring-black/5">
           
           <div className="grid grid-cols-2 gap-2 pt-1 pb-3 border-b border-slate-100/80">
             <button
@@ -555,7 +654,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
 
           <div className="flex flex-col space-y-1 text-sm font-medium">
             
-            {/* Profil */}
+            {/* a. Profil */}
             <button
               onClick={() => handleNavClick('/profil')}
               className={`text-left px-3 py-2.5 rounded-xl font-bold ${
@@ -565,13 +664,13 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               Profil Sekolah
             </button>
 
-            {/* BOSP Accordion */}
+            {/* b. BOSP Accordion (Tanpa Dollar icon) */}
             <div className="space-y-1">
               <button
                 onClick={() => setMobileBospOpen(!mobileBospOpen)}
                 className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left font-bold text-slate-700 hover:bg-white/70"
               >
-                <span>BOSP (Bantuan Operasional)</span>
+                <span>BOSP (Transparansi)</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${mobileBospOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
               </button>
 
@@ -599,7 +698,7 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               )}
             </div>
 
-            {/* Kesiswaan Accordion */}
+            {/* c. Kesiswaan Accordion */}
             <div className="space-y-1">
               <button
                 onClick={() => setMobileKesiswaanOpen(!mobileKesiswaanOpen)}
@@ -612,82 +711,130 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({ currentPath, navigat
               {mobileKesiswaanOpen && (
                 <div className="pl-4 pr-2 space-y-1 border-l-2 border-teal-300 ml-3 animate-in fade-in duration-150">
                   <button
-                    onClick={() => handleNavClick('/jurnalistik')}
+                    onClick={() => handleNavClick('/kesiswaan?tab=osis')}
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
                   >
-                    • Jurnalistik & Mading Santri
+                    • OSIS (Organisasi Siswa)
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/kesiswaan?tab=ekskul')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Ekstrakurikuler
                   </button>
                   <button
                     onClick={() => handleNavClick('/prestasi')}
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
                   >
-                    • Prestasi Siswa & Guru
-                  </button>
-                  <button
-                    onClick={() => handleNavClick('/agenda')}
-                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
-                  >
-                    • Agenda & Kalender Kegiatan
+                    • Prestasi Siswa dan Guru
                   </button>
                 </div>
               )}
             </div>
 
-            {/* Akademik Accordion */}
+            {/* d. Kurikulum Accordion */}
             <div className="space-y-1">
               <button
-                onClick={() => setMobileAkademikOpen(!mobileAkademikOpen)}
+                onClick={() => setMobileKurikulumOpen(!mobileKurikulumOpen)}
                 className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left font-bold text-slate-700 hover:bg-white/70"
               >
-                <span>Akademik & Kurikulum</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${mobileAkademikOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
+                <span>Kurikulum</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${mobileKurikulumOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
               </button>
 
-              {mobileAkademikOpen && (
+              {mobileKurikulumOpen && (
                 <div className="pl-4 pr-2 space-y-1 border-l-2 border-teal-300 ml-3 animate-in fade-in duration-150">
                   <button
                     onClick={() => handleNavClick('/akademik/kosp')}
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
                   >
-                    • Berkas KOSP (Kurikulum Merdeka)
+                    • Berkas KOSP
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/akademik/kalender')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Kalender Akademik
                   </button>
                   <button
                     onClick={() => handleNavClick('/akademik/jadwal')}
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
                   >
-                    • Jadwal Mengajar & Pelajaran
+                    • Jadwal Mengajar
                   </button>
                   <button
                     onClick={() => handleNavClick('/akademik/administrasi')}
                     className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
                   >
-                    • Administrasi & Perangkat Ajar Guru
+                    • Administrasi Guru
                   </button>
                 </div>
               )}
             </div>
 
-            {/* Pengajar */}
+            {/* e. Guru */}
             <button
               onClick={() => handleNavClick('/pengajar')}
               className={`text-left px-3 py-2.5 rounded-xl font-bold ${
-                isPengajarActive ? 'bg-teal-50/80 text-teal-800' : 'text-slate-700 hover:bg-white/70'
+                isGuruActive ? 'bg-teal-50/80 text-teal-800' : 'text-slate-700 hover:bg-white/70'
               }`}
             >
-              Dewan Pengajar
+              Guru
             </button>
 
-            {/* Galeri */}
-            <button
-              onClick={() => handleNavClick('/galeri')}
-              className={`text-left px-3 py-2.5 rounded-xl font-bold ${
-                isGaleriActive ? 'bg-teal-50/80 text-teal-800' : 'text-slate-700 hover:bg-white/70'
-              }`}
-            >
-              Galeri Dokumentasi
-            </button>
+            {/* f. Publikasi Accordion */}
+            <div className="space-y-1">
+              <button
+                onClick={() => setMobilePublikasiOpen(!mobilePublikasiOpen)}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left font-bold text-slate-700 hover:bg-white/70"
+              >
+                <span>Publikasi</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${mobilePublikasiOpen ? 'rotate-180 text-teal-600' : 'text-slate-400'}`} />
+              </button>
 
-            {/* PPDB (Disebelah Galeri) */}
+              {mobilePublikasiOpen && (
+                <div className="pl-4 pr-2 space-y-1 border-l-2 border-teal-300 ml-3 animate-in fade-in duration-150">
+                  <button
+                    onClick={() => handleNavClick('/berita')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Berita
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/agenda')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Agenda Sekolah
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/info')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Info Sekolah
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/galeri')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Galeri
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/kata-mereka')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Kata Mereka
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/jurnalistik')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-xs font-semibold text-teal-900 hover:bg-teal-50/80"
+                  >
+                    • Jurnalistik
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* g. PPDB */}
             <button
               onClick={() => handleNavClick('/ppdb')}
               className={`text-left px-3 py-2.5 rounded-xl font-bold flex items-center justify-between ${

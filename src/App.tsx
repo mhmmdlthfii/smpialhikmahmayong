@@ -19,6 +19,8 @@ import { BOSPPage } from './components/public/BOSPPage';
 import { AkademikPage } from './components/public/AkademikPage';
 import { TeachersPage } from './components/public/TeachersPage';
 import { JournalismPage } from './components/public/JournalismPage';
+import { KesiswaanPage } from './components/public/KesiswaanPage';
+import { KataMerekaPage } from './components/public/KataMerekaPage';
 
 // Portal & Authentication
 import { LoginPage } from './components/portal/LoginPage';
@@ -128,9 +130,14 @@ const AppContent: React.FC = () => {
     const urlParams = new URLSearchParams(window.location.search || (currentPath.includes('?') ? currentPath.split('?')[1] : ''));
     const yearParam = urlParams.get('tahun') || '2026';
     publicPage = <BOSPPage initialYear={yearParam} navigate={navigate} />;
-  } else if (currentPath.startsWith('/akademik')) {
-    let initialTab: 'kosp' | 'jadwal' | 'administrasi' = 'kosp';
-    if (currentPath.includes('jadwal')) initialTab = 'jadwal';
+  } else if (currentPath.startsWith('/kesiswaan')) {
+    let initialTab: 'osis' | 'ekskul' = 'osis';
+    if (currentPath.includes('ekskul')) initialTab = 'ekskul';
+    publicPage = <KesiswaanPage initialTab={initialTab} navigate={navigate} />;
+  } else if (currentPath.startsWith('/akademik') || currentPath.startsWith('/kurikulum')) {
+    let initialTab: 'kosp' | 'kalender' | 'jadwal' | 'administrasi' = 'kosp';
+    if (currentPath.includes('kalender')) initialTab = 'kalender';
+    else if (currentPath.includes('jadwal')) initialTab = 'jadwal';
     else if (currentPath.includes('administrasi')) initialTab = 'administrasi';
     publicPage = <AkademikPage initialTab={initialTab} navigate={navigate} />;
   } else if (currentPath === '/pengajar' || currentPath === '/guru') {
@@ -139,12 +146,16 @@ const AppContent: React.FC = () => {
     publicPage = <JournalismPage navigate={navigate} />;
   } else if (currentPath === '/berita') {
     publicPage = <NewsPage navigate={navigate} />;
+  } else if (currentPath === '/info' || currentPath === '/pengumuman') {
+    publicPage = <NewsPage initialCategory="Pengumuman" navigate={navigate} />;
   } else if (currentPath === '/agenda') {
     publicPage = <EventsPage />;
   } else if (currentPath === '/prestasi') {
     publicPage = <AchievementsPage />;
   } else if (currentPath === '/galeri') {
     publicPage = <GalleryPage />;
+  } else if (currentPath === '/kata-mereka' || currentPath === '/testimoni') {
+    publicPage = <KataMerekaPage />;
   } else if (currentPath === '/ppdb') {
     publicPage = <PPDBPage />;
   } else if (currentPath === '/verify' || currentPath === '/verifikasi' || currentPath.startsWith('/verify') || currentPath.startsWith('/verifikasi')) {

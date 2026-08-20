@@ -17,15 +17,16 @@ import {
 import { useApp } from '../../context/AppContext';
 
 interface AkademikPageProps {
-  initialTab?: 'kosp' | 'jadwal' | 'administrasi';
+  initialTab?: 'kosp' | 'kalender' | 'jadwal' | 'administrasi';
   navigate?: (path: string) => void;
 }
 
 export const AkademikPage: React.FC<AkademikPageProps> = ({ initialTab = 'kosp', navigate }) => {
   const { websiteSettings, teachers } = useApp();
-  const [activeTab, setActiveTab] = useState<'kosp' | 'jadwal' | 'administrasi'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'kosp' | 'kalender' | 'jadwal' | 'administrasi'>(initialTab);
   const [selectedClass, setSelectedClass] = useState<string>('VII-A');
   const [selectedDay, setSelectedDay] = useState<string>('Senin');
+  const [selectedSemester, setSelectedSemester] = useState<'ganjil' | 'genap'>('genap');
   const [searchAdminDoc, setSearchAdminDoc] = useState<string>('');
 
   // Sample Schedule Data for SMP Islam Al Hikmah Mayong
@@ -133,6 +134,18 @@ export const AkademikPage: React.FC<AkademikPageProps> = ({ initialTab = 'kosp',
             </button>
 
             <button
+              onClick={() => setActiveTab('kalender')}
+              className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-2 ${
+                activeTab === 'kalender'
+                  ? 'bg-amber-400 text-teal-950 shadow-md shadow-amber-400/30 scale-105 ring-2 ring-white/50'
+                  : 'bg-white/15 text-white hover:bg-white/25 border border-white/10'
+              }`}
+            >
+              <Calendar className="w-4 h-4" />
+              <span>Kalender Akademik</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('jadwal')}
               className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-2 ${
                 activeTab === 'jadwal'
@@ -140,7 +153,7 @@ export const AkademikPage: React.FC<AkademikPageProps> = ({ initialTab = 'kosp',
                   : 'bg-white/15 text-white hover:bg-white/25 border border-white/10'
               }`}
             >
-              <Calendar className="w-4 h-4" />
+              <Clock className="w-4 h-4" />
               <span>Jadwal Mengajar</span>
             </button>
 
@@ -335,7 +348,225 @@ export const AkademikPage: React.FC<AkademikPageProps> = ({ initialTab = 'kosp',
         </div>
       )}
 
-      {/* TAB 2: JADWAL MENGAJAR */}
+      {/* TAB 2: KALENDER AKADEMIK */}
+      {activeTab === 'kalender' && (
+        <div className="space-y-8 animate-in fade-in duration-200">
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-heading font-black text-teal-950">
+                Kalender Pendidikan & Jadwal Akademik
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500">
+                Tahun Ajaran 2026/2027 • SMP Islam Al Hikmah Mayong Jepara
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSelectedSemester('ganjil')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedSemester === 'ganjil'
+                    ? 'bg-teal-700 text-white shadow-xs'
+                    : 'bg-white text-slate-600 hover:text-teal-800 border border-teal-200'
+                }`}
+              >
+                Semester Ganjil (Jul - Des)
+              </button>
+              <button
+                onClick={() => setSelectedSemester('genap')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  selectedSemester === 'genap'
+                    ? 'bg-teal-700 text-white shadow-xs'
+                    : 'bg-white text-slate-600 hover:text-teal-800 border border-teal-200'
+                }`}
+              >
+                Semester Genap (Jan - Jun)
+              </button>
+              <button
+                onClick={() => alert('Mengunduh Kalender Pendidikan Format PDF Resmi')}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Unduh Kalender PDF</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Agenda Highlight Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="glass-card p-4 rounded-2xl bg-white border border-teal-100 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                Pembelajaran Efektif
+              </span>
+              <h3 className="font-heading font-bold text-sm text-teal-950">Awal Masuk & KBM</h3>
+              <p className="text-xs text-slate-500">
+                Semester Genap dimulai 5 Januari 2026. Pembelajaran aktif berbasis Kurikulum Merdeka Fase D.
+              </p>
+            </div>
+
+            <div className="glass-card p-4 rounded-2xl bg-white border border-teal-100 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                Asesmen Formatif
+              </span>
+              <h3 className="font-heading font-bold text-sm text-teal-950">Penilaian Tengah Semester</h3>
+              <p className="text-xs text-slate-500">
+                PTS / STS Semester Genap dijadwalkan pada 23 Februari - 2 Maret 2026 berbasis CBT dan unjuk kerja.
+              </p>
+            </div>
+
+            <div className="glass-card p-4 rounded-2xl bg-white border border-teal-100 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-purple-100 text-purple-800">
+                Kegiatan Ramadhan
+              </span>
+              <h3 className="font-heading font-bold text-sm text-teal-950">Pesantren Kilat & Zakat</h3>
+              <p className="text-xs text-slate-500">
+                Pembinaan intensif tahfidz, kajian kitab akhlak santri, dan pembagian zakat fitrah 11 - 20 Maret 2026.
+              </p>
+            </div>
+
+            <div className="glass-card p-4 rounded-2xl bg-white border border-teal-100 space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                Evaluasi Akhir
+              </span>
+              <h3 className="font-heading font-bold text-sm text-teal-950">SAS & Pembagian Rapor</h3>
+              <p className="text-xs text-slate-500">
+                Sumatif Akhir Tahun (SAT) kelas VII-VIII & PSAJ Kelas IX, dilanjutkan penerimaan rapor 20 Juni 2026.
+              </p>
+            </div>
+          </div>
+
+          {/* Timeline Table */}
+          <div className="glass-panel-strong rounded-3xl border border-teal-100 overflow-hidden bg-white shadow-xs">
+            <div className="p-4 bg-teal-50/70 border-b border-teal-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-teal-700" />
+                <span className="text-xs font-bold text-teal-950">
+                  Rincian Agenda {selectedSemester === 'ganjil' ? 'Semester Ganjil TA 2026/2027' : 'Semester Genap TA 2026/2027'}
+                </span>
+              </div>
+              <span className="text-[11px] font-semibold text-slate-500">
+                Status: Resmi Berlaku
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/60 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+                    <th className="px-5 py-3">Bulan</th>
+                    <th className="px-5 py-3">Rentang Tanggal</th>
+                    <th className="px-5 py-3">Nama Kegiatan / Agenda</th>
+                    <th className="px-5 py-3">Keterangan / Target</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-teal-950 font-medium">
+                  {selectedSemester === 'genap' ? (
+                    <>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Januari 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">05 Januari 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Hari Pertama Masuk Semester Genap</td>
+                        <td className="px-5 py-3.5 text-slate-600">Apel pagi, pembagian jadwal mengajar & tadarus juz 30</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Januari 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">16 Januari 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Peringatan Isra Mi'raj Nabi Muhammad SAW</td>
+                        <td className="px-5 py-3.5 text-slate-600">Pengajian akbar santri & khotmil qur'an</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Februari 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">23 Feb - 02 Mar 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Penilaian Tengah Semester (PTS/STS) Genap</td>
+                        <td className="px-5 py-3.5 text-slate-600">Asesmen berbasis komputer dan penilaian portofolio</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Maret 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">11 - 20 Maret 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Pesantren Kilat Ramadhan 1447 H</td>
+                        <td className="px-5 py-3.5 text-slate-600">Kajian kitab ta'lim muta'allim, tahfidz & bakti sosial</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Maret - April 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">23 Mar - 04 Apr 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Libur Hari Raya Idul Fitri 1447 H</td>
+                        <td className="px-5 py-3.5 text-slate-600">Cuti bersama & silaturahmi Idul Fitri</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Mei 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">11 - 18 Mei 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Penilaian Sumatif Akhir Jenjang (PSAJ) Kelas IX</td>
+                        <td className="px-5 py-3.5 text-slate-600">Ujian kelulusan terstandar bagi santri kelas IX</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Juni 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">01 - 08 Juni 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Sumatif Akhir Tahun (SAT) Kelas VII & VIII</td>
+                        <td className="px-5 py-3.5 text-slate-600">Evaluasi kenaikan kelas terpadu</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Juni 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">20 Juni 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Penerimaan Rapor & Wisuda Pelepasan Santri</td>
+                        <td className="px-5 py-3.5 text-slate-600">Wisuda tahfidz, penyerahan rapor & libur kenaikan kelas</td>
+                      </tr>
+                    </>
+                  ) : (
+                    <>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Juli 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">13 - 15 Juli 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Masa Pengenalan Lingkungan Sekolah (MPLS)</td>
+                        <td className="px-5 py-3.5 text-slate-600">Orientasi santri baru, pengenalan adab & kultur Al Hikmah</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Agustus 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">17 Agustus 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Peringatan HUT Kemerdekaan RI Ke-81</td>
+                        <td className="px-5 py-3.5 text-slate-600">Upacara bendera & karnaval budaya islami</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">September 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">21 - 28 Sept 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Penilaian Tengah Semester (PTS/STS) Ganjil</td>
+                        <td className="px-5 py-3.5 text-slate-600">Evaluasi tengah semester ganjil semua jenjang</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Oktober 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">22 Oktober 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Hari Santri Nasional (HSN 2026)</td>
+                        <td className="px-5 py-3.5 text-slate-600">Apel akbar bersarung, lomba kirab & qiro\'ah santri</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">November 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">25 November 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Peringatan Hari Guru Nasional</td>
+                        <td className="px-5 py-3.5 text-slate-600">Apresiasi dedikasi ustadz/ustadzah & gelar karya P5</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Desember 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">01 - 08 Des 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Sumatif Akhir Semester (SAS) Ganjil</td>
+                        <td className="px-5 py-3.5 text-slate-600">Asesmen akhir semester ganjil berbasis digital</td>
+                      </tr>
+                      <tr className="hover:bg-teal-50/40">
+                        <td className="px-5 py-3.5 font-bold text-teal-800">Desember 2026</td>
+                        <td className="px-5 py-3.5 font-mono text-slate-600">19 Desember 2026</td>
+                        <td className="px-5 py-3.5 font-bold text-teal-950">Pembagian Rapor Semester Ganjil</td>
+                        <td className="px-5 py-3.5 text-slate-600">Pertemuan wali santri & pembagian buku rapor</td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      )}
+
+      {/* TAB 3: JADWAL MENGAJAR */}
       {activeTab === 'jadwal' && (
         <div className="space-y-6 animate-in fade-in duration-200">
           

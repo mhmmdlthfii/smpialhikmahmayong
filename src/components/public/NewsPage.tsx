@@ -15,13 +15,14 @@ import {
 
 interface NewsPageProps {
   initialSlug?: string;
+  initialCategory?: string;
   navigate: (path: string) => void;
 }
 
-export const NewsPage: React.FC<NewsPageProps> = ({ initialSlug, navigate }) => {
+export const NewsPage: React.FC<NewsPageProps> = ({ initialSlug, initialCategory = 'Semua', navigate }) => {
   const { news } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(() => {
     if (initialSlug) {
       return news.find((n) => n.slug === initialSlug) || null;
