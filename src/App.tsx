@@ -101,6 +101,8 @@ const AppContent: React.FC = () => {
       portalContent = <EKelulusanModule />;
     } else if (currentPath === '/portal/cms') {
       portalContent = <CMSModule />;
+    } else if (currentPath === '/portal/setting' || currentPath === '/portal/settings') {
+      portalContent = <SettingModule />;
     }
 
     return (

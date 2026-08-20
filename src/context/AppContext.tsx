@@ -683,7 +683,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       userName: 'Administrator',
       userRole: 'ADMIN',
       action: 'CREATE',
-      module: 'Master Data',
+      module: 'MasterData',
       recordId: newStudent.id,
       description: `Menambahkan data santri baru: ${newStudent.name} (${newStudent.nisn})`
     });
@@ -710,7 +710,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       userName: 'Administrator',
       userRole: 'ADMIN',
       action: 'CREATE',
-      module: 'Master Data',
+      module: 'MasterData',
       recordId: newTeacher.id,
       description: `Menambahkan data guru baru: ${newTeacher.name} (${newTeacher.nip})`
     });
@@ -737,7 +737,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       userName: 'Administrator',
       userRole: 'ADMIN',
       action: 'CREATE',
-      module: 'Master Data',
+      module: 'MasterData',
       recordId: newClass.id,
       description: `Menambahkan rombel kelas baru: ${newClass.name}`
     });

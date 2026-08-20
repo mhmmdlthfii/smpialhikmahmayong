@@ -162,63 +162,19 @@ export const ESuratModule: React.FC = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-200 text-teal-950">
       
-      {/* Module Title & Tabs */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
-              <Mail className="w-4 h-4" />
-            </div>
-            <h2 className="font-heading font-extrabold text-2xl text-teal-950">
-              E-Surat & Manajemen Dokumen Terpadu (ETTD)
-            </h2>
+      {/* Module Title */}
+      <div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <Mail className="w-4 h-4" />
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Penomoran otomatis, draft surat resmi, verifikasi Tanda Tangan Elektronik BSrE, dan cetak PDF.
-          </p>
+          <h2 className="font-heading font-extrabold text-2xl text-teal-950">
+            E-Surat & Manajemen Dokumen Terpadu (ETTD)
+          </h2>
         </div>
-
-        {/* Action Tabs */}
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setActiveTab('outbox')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'outbox'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Arsip Surat Keluar ({letters.length})
-          </button>
-
-          {(activeRole === 'KEPALA_SEKOLAH' || activeRole === 'ADMIN' || activeRole === 'SUPER_ADMIN') && (
-            <button
-              onClick={() => setActiveTab('pending_sign')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'pending_sign'
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs'
-                  : 'glass-panel text-amber-700 hover:bg-amber-50 border-amber-200'
-              }`}
-            >
-              <FileCheck className="w-3.5 h-3.5" />
-              <span>Antrean TTD ({pendingLetters.length})</span>
-            </button>
-          )}
-
-          {hasPermission('e-surat:create') && (
-            <button
-              onClick={() => setActiveTab('create')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeTab === 'create'
-                  ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                  : 'bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200'
-              }`}
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-              <span>Buat Surat Baru</span>
-            </button>
-          )}
-        </div>
+        <p className="text-xs text-slate-600 mt-1">
+          Penomoran otomatis, draft surat resmi, verifikasi Tanda Tangan Elektronik BSrE, dan cetak PDF.
+        </p>
       </div>
 
       {/* TAB 1: ARSIP SURAT KELUAR */}

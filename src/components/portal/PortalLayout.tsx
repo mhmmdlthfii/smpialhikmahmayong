@@ -130,19 +130,6 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       description: 'Layanan persuratan dinas & approval tanda tangan digital PIN',
       categories: [
         {
-          categoryTitle: 'INFORMASI & STATUS',
-          items: [
-            { id: 'outbox', label: 'Dashboard Surat', icon: Mail },
-            {
-              id: 'pending_sign',
-              label: 'Menunggu E-TTD',
-              icon: ShieldCheck,
-              badge: pendingLettersCount > 0 ? `${pendingLettersCount}` : undefined,
-              badgeColor: 'bg-rose-500 text-white font-bold'
-            }
-          ]
-        },
-        {
           categoryTitle: 'SURAT KELUAR & MASUK',
           items: [
             { id: 'create', label: 'Buat Surat Baru', icon: PlusCircle },
@@ -151,8 +138,15 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
           ]
         },
         {
-          categoryTitle: 'VERIFIKASI & LEGALITAS',
+          categoryTitle: 'APPROVAL & LEGALITAS',
           items: [
+            {
+              id: 'pending_sign',
+              label: 'Menunggu E-TTD',
+              icon: ShieldCheck,
+              badge: pendingLettersCount > 0 ? `${pendingLettersCount}` : undefined,
+              badgeColor: 'bg-rose-500 text-white font-bold'
+            },
             { id: 'public_verify', label: 'Verifikasi Dokumen QR', icon: CheckCircle2, path: '/verify' }
           ]
         }
@@ -168,34 +162,17 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       description: 'Jurnal KBM harian, jadwal & rekap penilaian guru',
       categories: [
         {
-          categoryTitle: 'INFORMASI & PERIODE',
+          categoryTitle: 'KBM & AKTIVITAS HARIAN',
           items: [
-            { id: 'journals', label: 'Dashboard Jurnal', icon: LayoutDashboard },
-            { id: 'schedules', label: 'Semester & Jadwal TA', icon: Calendar }
+            { id: 'create_journal', label: 'Isi Jurnal Hari Ini', icon: PlusCircle },
+            { id: 'journals', label: 'Jurnal Mengajar Guru', icon: BookOpen },
+            { id: 'schedules', label: 'Jadwal & Agenda Pelajaran', icon: Calendar }
           ]
         },
         {
-          categoryTitle: 'DATA MASTER',
+          categoryTitle: 'PENILAIAN & REKAP',
           items: [
-            { id: 'journals', label: 'Data Kelas', icon: Layers },
-            { id: 'journals', label: 'Data Siswa', icon: Users },
-            { id: 'schedules', label: 'Mapel & Guru', icon: BookOpen }
-          ]
-        },
-        {
-          categoryTitle: 'INPUT HARIAN',
-          items: [
-            { id: 'grades', label: 'Bobot & Kriteria Nilai', icon: Scale },
-            { id: 'journals', label: 'Input Jurnal Mengajar', icon: FileText },
-            { id: 'grades', label: 'Input Nilai Siswa', icon: Award }
-          ]
-        },
-        {
-          categoryTitle: 'LAPORAN & REKAP',
-          items: [
-            { id: 'journals', label: 'Rekap Semua (Excel)', icon: FileSpreadsheet },
-            { id: 'journals', label: 'Rekap Jurnal KBM', icon: FileText },
-            { id: 'grades', label: 'Rekap Nilai Format', icon: Award }
+            { id: 'grades', label: 'Nilai & Asesmen Siswa', icon: Award }
           ]
         }
       ]
@@ -212,14 +189,13 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
         {
           categoryTitle: 'LIVE MONITORING',
           items: [
-            { id: 'live_qr', label: 'Live QR Code Presensi', icon: QrCode }
+            { id: 'live_qr', label: 'Live QR Code Scanner', icon: QrCode }
           ]
         },
         {
-          categoryTitle: 'LOG & REKAP KEHADIRAN',
+          categoryTitle: 'LOG & NOTIFIKASI',
           items: [
-            { id: 'history', label: 'Log Presensi Harian', icon: Calendar },
-            { id: 'history', label: 'Rekap Kehadiran Bulanan', icon: FileSpreadsheet },
+            { id: 'history', label: 'Rekap Presensi Harian', icon: Calendar },
             { id: 'notifications', label: 'Notifikasi WhatsApp Ortu', icon: Bell }
           ]
         }
@@ -235,16 +211,17 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       description: 'Pencatatan poin apresiasi prestasi & kedisiplinan santri',
       categories: [
         {
-          categoryTitle: 'DATA POIN SANTRI',
+          categoryTitle: 'PENCATATAN POIN',
           items: [
-            { id: 'transactions', label: 'Catatan Poin Siswa', icon: Award },
-            { id: 'leaderboard', label: 'Santri Teladan (Top 10)', icon: Trophy }
+            { id: 'create_poin', label: 'Catat Poin Siswa', icon: PlusCircle },
+            { id: 'transactions', label: 'Log Catatan Poin', icon: Award }
           ]
         },
         {
-          categoryTitle: 'MASTER & ATURAN',
+          categoryTitle: 'REKAP & KONSELING',
           items: [
-            { id: 'categories', label: 'Katalog Kriteria Poin', icon: Filter }
+            { id: 'leaderboard', label: 'Rekap & Konseling BK', icon: Trophy },
+            { id: 'categories', label: 'Katalog Tata Tertib', icon: Filter }
           ]
         }
       ]
@@ -262,7 +239,8 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
           categoryTitle: 'DOKUMEN & PENGUMUMAN',
           items: [
             { id: 'records', label: 'Daftar SKL Santri', icon: GraduationCap },
-            { id: 'publish', label: 'Status Pengumuman', icon: CheckCircle2 }
+            { id: 'batch_publish', label: 'Publikasikan SKL Serentak', icon: Sparkles },
+            { id: 'public_verify', label: 'Verifikasi SKL Digital', icon: CheckCircle2, path: '/verify' }
           ]
         }
       ]
@@ -279,7 +257,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       description: 'Pengaturan identitas sekolah, berita & drive media',
       categories: [
         {
-          categoryTitle: 'DRIVE MEDIA SITUS',
+          categoryTitle: 'DRIVE & MEDIA',
           items: [
             {
               id: 'media',
@@ -317,17 +295,31 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       description: 'Manajemen akun, hak akses role, data guru, rombel kelas, dan santri',
       categories: [
         {
-          categoryTitle: 'AKUN & HAK AKSES',
+          categoryTitle: 'MANAJEMEN AKUN & ROLE',
           items: [
-            { id: 'accounts', label: 'Manage Account', icon: ShieldCheck }
+            { id: 'accounts', label: 'Manage Account', icon: ShieldCheck },
+            { id: 'create_account', label: 'Tambah Akun Baru', icon: PlusCircle }
           ]
         },
         {
-          categoryTitle: 'DATA MASTER AKADEMIK',
+          categoryTitle: 'MASTER DATA DEWAN GURU',
           items: [
-            { id: 'teachers', label: 'Data Guru', icon: GraduationCap },
-            { id: 'classes', label: 'Data Kelas', icon: Layers },
-            { id: 'students', label: 'Data Siswa', icon: Users }
+            { id: 'teachers', label: 'Data Dewan Guru', icon: GraduationCap },
+            { id: 'create_teacher', label: 'Tambah Guru Baru', icon: PlusCircle }
+          ]
+        },
+        {
+          categoryTitle: 'MASTER ROMBONGAN KELAS',
+          items: [
+            { id: 'classes', label: 'Data Rombel Kelas', icon: Layers },
+            { id: 'create_class', label: 'Tambah Kelas Baru', icon: PlusCircle }
+          ]
+        },
+        {
+          categoryTitle: 'MASTER DATA SANTRI',
+          items: [
+            { id: 'students', label: 'Data Santri / Siswa', icon: Users },
+            { id: 'create_student', label: 'Tambah Santri Baru', icon: PlusCircle }
           ]
         }
       ]

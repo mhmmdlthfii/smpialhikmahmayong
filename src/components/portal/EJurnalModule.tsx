@@ -44,7 +44,10 @@ export const EJurnalModule: React.FC = () => {
       const customEvent = e as CustomEvent<{ module: string; tab: string }>;
       if (customEvent.detail?.module === 'e-jurnal' && customEvent.detail?.tab) {
         const tab = customEvent.detail.tab;
-        if (['journals', 'schedules', 'grades'].includes(tab)) {
+        if (tab === 'create_journal') {
+          setActiveTab('journals');
+          setShowAddModal(true);
+        } else if (['journals', 'schedules', 'grades'].includes(tab)) {
           setActiveTab(tab as any);
         }
       }
@@ -126,66 +129,18 @@ export const EJurnalModule: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-200 text-teal-950">
       
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
-              <BookOpen className="w-4 h-4" />
-            </div>
-            <h2 className="font-heading font-extrabold text-2xl text-teal-950">
-              E-Jurnal Mengajar & Nilai Akademik
-            </h2>
+      <div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <BookOpen className="w-4 h-4" />
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Pencatatan agenda mengajar harian, ketercapaian materi (Capaian Pembelajaran), presensi kelas, dan rekapitulasi nilai formatif/sumatif.
-          </p>
+          <h2 className="font-heading font-extrabold text-2xl text-teal-950">
+            E-Jurnal Mengajar & Nilai Akademik
+          </h2>
         </div>
-
-        {/* Tab Actions */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => setActiveTab('journals')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'journals'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Jurnal Mengajar ({teachingJournals.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('schedules')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'schedules'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Jadwal Pelajaran ({teachingSchedules.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('grades')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'grades'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Nilai & Asesmen ({studentGrades.length})
-          </button>
-
-          {(activeRole === 'GURU' || activeRole === 'WALI_KELAS' || activeRole === 'ADMIN' || activeRole === 'SUPER_ADMIN') && (
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-              <span>Isi Jurnal Hari Ini</span>
-            </button>
-          )}
-        </div>
+        <p className="text-xs text-slate-600 mt-1">
+          Pencatatan agenda mengajar harian, ketercapaian materi (Capaian Pembelajaran), presensi kelas, dan rekapitulasi nilai formatif/sumatif.
+        </p>
       </div>
 
       {/* TAB 1: JURNAL MENGAJAR */}

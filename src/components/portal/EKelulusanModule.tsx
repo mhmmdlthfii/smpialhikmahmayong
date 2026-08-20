@@ -36,6 +36,27 @@ export const EKelulusanModule: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [selectedRecordForSKL, setSelectedRecordForSKL] = useState<GraduationRecord | null>(null);
 
+  const [activeTab, setActiveTab] = useState<'records' | 'publish'>('records');
+
+  // Synchronize tab with Secondary Sidebar events
+  React.useEffect(() => {
+    const handleSubTabEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ module: string; tab: string }>;
+      if (customEvent.detail?.module === 'e-kelulusan' && customEvent.detail?.tab) {
+        const tab = customEvent.detail.tab;
+        if (tab === 'batch_publish' || tab === 'publish') {
+          if (window.confirm('Publikasikan status kelulusan untuk semua siswa angkatan?')) {
+            batchPublishGraduation();
+          }
+        } else if (tab === 'records') {
+          setActiveTab('records');
+        }
+      }
+    };
+    window.addEventListener('portal-subtab-change', handleSubTabEvent);
+    return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
+  }, [batchPublishGraduation]);
+
   const filteredRecords = graduationRecords.filter((rec) => {
     const matchStatus = filterStatus === 'ALL' || rec.status === filterStatus;
     const matchSearch =
@@ -57,37 +78,18 @@ export const EKelulusanModule: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-200 text-teal-950">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
-              <GraduationCap className="w-4 h-4" />
-            </div>
-            <h2 className="font-heading font-extrabold text-2xl text-teal-950">
-              E-Kelulusan & Penerbitan SKL Digital
-            </h2>
+      <div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <GraduationCap className="w-4 h-4" />
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Pengumuman kelulusan serentak, verifikasi nilai akhir, dan pencetakan Surat Keterangan Lulus (SKL) ber-ETTD sah BSrE.
-          </p>
+          <h2 className="font-heading font-extrabold text-2xl text-teal-950">
+            E-Kelulusan & Penerbitan SKL Digital
+          </h2>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
-          {(activeRole === 'KEPALA_SEKOLAH' || activeRole === 'ADMIN' || activeRole === 'SUPER_ADMIN') && (
-            <button
-              onClick={() => {
-                if (window.confirm('Publikasikan status kelulusan untuk semua siswa angkatan?')) {
-                  batchPublishGraduation();
-                }
-              }}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 text-white flex items-center gap-1.5 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Publikasikan Serentak</span>
-            </button>
-          )}
-        </div>
+        <p className="text-xs text-slate-600 mt-1">
+          Pengumuman kelulusan serentak, verifikasi nilai akhir, dan pencetakan Surat Keterangan Lulus (SKL) ber-ETTD sah BSrE.
+        </p>
       </div>
 
       {/* Graduation Countdown & Banner */}

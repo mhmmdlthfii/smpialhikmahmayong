@@ -76,14 +76,26 @@ export const SettingModule: React.FC = () => {
       const customEvent = e as CustomEvent<{ module: string; tab: string }>;
       if (customEvent.detail?.module === 'setting' && customEvent.detail?.tab) {
         const tab = customEvent.detail.tab;
-        if (['accounts', 'teachers', 'classes', 'students'].includes(tab)) {
+        if (tab === 'create_account') {
+          setActiveTab('accounts');
+          handleOpenAddAccount();
+        } else if (tab === 'create_teacher') {
+          setActiveTab('teachers');
+          handleOpenAddTeacher();
+        } else if (tab === 'create_class') {
+          setActiveTab('classes');
+          handleOpenAddClass();
+        } else if (tab === 'create_student') {
+          setActiveTab('students');
+          handleOpenAddStudent();
+        } else if (['accounts', 'teachers', 'classes', 'students'].includes(tab)) {
           setActiveTab(tab as any);
         }
       }
     };
     window.addEventListener('portal-subtab-change', handleSubTabEvent);
     return () => window.removeEventListener('portal-subtab-change', handleSubTabEvent);
-  }, []);
+  }, [classes, teachers]);
 
   // =========================================================================
   // 1. MANAGE ACCOUNT STATE & MODALS
@@ -610,57 +622,6 @@ export const SettingModule: React.FC = () => {
               {teachers.length} Guru
             </span>
           </div>
-        </div>
-
-        {/* Tab Navigation Pill Bar */}
-        <div className="mt-6 flex flex-wrap gap-2 pt-5 border-t border-white/10">
-          <button
-            onClick={() => setActiveTab('accounts')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'accounts'
-                ? 'bg-white text-teal-950 shadow-md shadow-black/10 scale-105'
-                : 'bg-white/10 text-teal-100 hover:bg-white/20 hover:text-white'
-            }`}
-          >
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            <span>Manage Account ({users.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('teachers')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'teachers'
-                ? 'bg-white text-teal-950 shadow-md shadow-black/10 scale-105'
-                : 'bg-white/10 text-teal-100 hover:bg-white/20 hover:text-white'
-            }`}
-          >
-            <GraduationCap className="w-4 h-4 text-teal-600" />
-            <span>Data Guru ({teachers.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('classes')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'classes'
-                ? 'bg-white text-teal-950 shadow-md shadow-black/10 scale-105'
-                : 'bg-white/10 text-teal-100 hover:bg-white/20 hover:text-white'
-            }`}
-          >
-            <Layers className="w-4 h-4 text-indigo-600" />
-            <span>Data Kelas ({classes.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('students')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'students'
-                ? 'bg-white text-teal-950 shadow-md shadow-black/10 scale-105'
-                : 'bg-white/10 text-teal-100 hover:bg-white/20 hover:text-white'
-            }`}
-          >
-            <Users className="w-4 h-4 text-amber-600" />
-            <span>Data Siswa ({students.length})</span>
-          </button>
         </div>
       </div>
 

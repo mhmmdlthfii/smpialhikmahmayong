@@ -327,93 +327,18 @@ export const CMSModule: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-200 text-teal-950">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
-              <Settings className="w-4 h-4" />
-            </div>
-            <h2 className="font-heading font-extrabold text-2xl text-teal-950">
-              CMS Manajemen Portal & Konten Publik
-            </h2>
+      <div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <Settings className="w-4 h-4" />
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Pusat penyimpanan Drive media gambar internal, konfigurasi banner header 1343x342 px, hero carousel, berita, dan identitas sekolah.
-          </p>
+          <h2 className="font-heading font-extrabold text-2xl text-teal-950">
+            CMS Manajemen Portal & Konten Publik
+          </h2>
         </div>
-
-        {/* Tab Actions */}
-        <div className="flex flex-wrap items-center gap-2">
-          
-          {/* TAB 0: MEDIA LIBRARY (DRIVE SITUS) */}
-          <button
-            onClick={() => setActiveTab('media')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-              activeTab === 'media'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-teal-900 hover:text-teal-950 hover:bg-teal-50 border-teal-200'
-            }`}
-          >
-            <HardDrive className="w-3.5 h-3.5 text-amber-300" />
-            <span>Drive Media ({mediaAssets.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('slides')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'slides'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            <span>Slider Hero ({heroSlides.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('identity')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'identity'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Identitas Sekolah
-          </button>
-
-          <button
-            onClick={() => setActiveTab('news')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'news'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Berita ({news.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('services')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'services'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Layanan Eksternal ({systemServices.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('navigation')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'navigation'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Menu Navigasi ({navItems.length})
-          </button>
-        </div>
+        <p className="text-xs text-slate-600 mt-1">
+          Pusat penyimpanan Drive media gambar internal, konfigurasi banner header 1343x342 px, hero carousel, berita, dan identitas sekolah.
+        </p>
       </div>
 
       {saveSuccess && (

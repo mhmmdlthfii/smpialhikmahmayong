@@ -105,54 +105,18 @@ export const EPresensiModule: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-200 text-teal-950">
       
       {/* Module Title */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
-              <QrCode className="w-4 h-4" />
-            </div>
-            <h2 className="font-heading font-extrabold text-2xl text-teal-950">
-              E-Presensi Live Dynamic QR & Geofencing
-            </h2>
+      <div>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center">
+            <QrCode className="w-4 h-4" />
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Presensi digital anti-titip absen dengan QR token dinamis, validasi GPS radius sekolah, dan notifikasi instan WhatsApp/SMS wali murid.
-          </p>
+          <h2 className="font-heading font-extrabold text-2xl text-teal-950">
+            E-Presensi Live Dynamic QR & Geofencing
+          </h2>
         </div>
-
-        {/* Tab Switcher */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => setActiveTab('live_qr')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'live_qr'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Live QR & Scanner
-          </button>
-          <button
-            onClick={() => setActiveTab('history')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'history'
-                ? 'bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-600 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-teal-800 border-teal-100'
-            }`}
-          >
-            Rekap Presensi Harian ({dailyAttendance.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('notifications')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'notifications'
-                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs'
-                : 'glass-panel text-slate-600 hover:text-amber-800 border-amber-200'
-            }`}
-          >
-            Notifikasi Orang Tua ({parentNotifications.length})
-          </button>
-        </div>
+        <p className="text-xs text-slate-600 mt-1">
+          Presensi digital anti-titip absen dengan QR token dinamis, validasi GPS radius sekolah, dan notifikasi instan WhatsApp/SMS wali murid.
+        </p>
       </div>
 
       {/* Overview Stat Pills */}
