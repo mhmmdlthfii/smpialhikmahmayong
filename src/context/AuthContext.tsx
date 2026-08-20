@@ -15,6 +15,11 @@ interface AuthContextType {
   hasPermission: (permission: Permission | string) => boolean;
   hasAnyRole: (roles: RoleType[]) => boolean;
   availableUsers: User[];
+  users: User[];
+  addUser: (userData: Omit<User, 'id'>) => User;
+  updateUser: (id: string, updates: Partial<User>) => void;
+  deleteUser: (id: string) => void;
+  resetUserPassword?: (id: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -113,6 +118,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('school_platform_active_user');
     }
   }, [user]);
+
+  useEffect(() => {
+    localStorage.setItem('school_platform_users', JSON.stringify(users));
+  }, [users]);
+
+  const addUser = (userData: Omit<User, 'id'>): User => {
+    const newUser: User = {
+      ...userData,
+      id: `usr-${Date.now()}`
+    };
+    setUsers((prev) => [newUser, ...prev]);
+    return newUser;
+  };
+
+  const updateUser = (id: string, updates: Partial<User>) => {
+    setUsers((prev) =>
+      prev.map((u) => {
+        if (u.id === id) {
+          const updated = { ...u, ...updates };
+          // If the currently logged in user is being updated, keep active user state in sync
+          if (user && user.id === id) {
+            setUser((curr) => (curr ? { ...curr, ...updates } : null));
+          }
+          return updated;
+        }
+        return u;
+      })
+    );
+  };
+
+  const deleteUser = (id: string) => {
+    setUsers((prev) => prev.filter((u) => u.id !== id));
+  };
+
+  const resetUserPassword = (_id: string) => {
+    // Password reset simulation (in real app would trigger email/auth token)
+  };
 
   const activeRole: RoleType | null = user ? user.activeRole : null;
 
@@ -221,7 +263,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setActiveRole,
         hasPermission,
         hasAnyRole,
-        availableUsers: users
+        availableUsers: users,
+        users,
+        addUser,
+        updateUser,
+        deleteUser,
+        resetUserPassword
       }}
     >
       {children}

@@ -30,6 +30,7 @@ import { EPresensiModule } from './components/portal/EPresensiModule';
 import { EPoinModule } from './components/portal/EPoinModule';
 import { EKelulusanModule } from './components/portal/EKelulusanModule';
 import { CMSModule } from './components/portal/CMSModule';
+import { SettingModule } from './components/portal/SettingModule';
 
 // Common Modals & Elements
 import { ExternalAppModal } from './components/common/ExternalAppModal';

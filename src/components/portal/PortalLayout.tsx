@@ -39,21 +39,24 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Sparkles,
-  ArrowRight,
-  FileCheck
+  FileSpreadsheet,
+  Download,
+  Scale
 } from 'lucide-react';
 
-interface SubMenuItem {
-  id: string;
-  label: string;
-  description?: string;
-  icon: React.ElementType;
-  badge?: string | number;
-  badgeColor?: string;
-  path?: string;
+export interface SubMenuCategory {
+  categoryTitle: string;
+  items: {
+    id: string;
+    label: string;
+    icon: React.ElementType;
+    badge?: string | number;
+    badgeColor?: string;
+    path?: string;
+  }[];
 }
 
-interface PrimaryModule {
+export interface PrimaryModule {
   id: string;
   label: string;
   shortLabel: string;
@@ -63,7 +66,7 @@ interface PrimaryModule {
   badge?: string | number;
   badgeColor?: string;
   description: string;
-  subMenus: SubMenuItem[];
+  categories: SubMenuCategory[];
 }
 
 interface PortalLayoutProps {
@@ -78,13 +81,12 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
   children
 }) => {
   const { user, logout, hasPermission, activeRole, setActiveRole } = useAuth();
-  const { letters, websiteSettings, mediaAssets, students, dailyAttendance } = useApp();
+  const { letters, websiteSettings, mediaAssets } = useApp();
 
-  // Secondary sidebar collapse state (persisted in localStorage or default open)
+  // Secondary sidebar collapse state
   const [isSecondaryCollapsed, setIsSecondaryCollapsed] = useState<boolean>(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false);
   const [activeSubTab, setActiveSubTab] = useState<string>('');
-  const [subMenuSearch, setSubMenuSearch] = useState<string>('');
   const [userDropdownOpen, setUserDropdownOpen] = useState<boolean>(false);
 
   // Pending signature count for headmaster / admin
@@ -99,30 +101,20 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       path: '/portal',
       show: true,
       description: 'Pusat kontrol terpadu & integrasi layanan aplikasi',
-      subMenus: [
+      categories: [
         {
-          id: 'overview',
-          label: 'Ringkasan & Metrik',
-          description: 'Statistik aktivitas & status aplikasi',
-          icon: LayoutDashboard
+          categoryTitle: 'IKHTISAR UTAMA',
+          items: [
+            { id: 'overview', label: 'Dashboard Utama', icon: LayoutDashboard },
+            { id: 'external-apps', label: 'Layanan GAS Terpadu', icon: Layers }
+          ]
         },
         {
-          id: 'external-apps',
-          label: 'Layanan GAS Eksternal',
-          description: 'CBT, E-Rapor, E-Perpus & Sistem GAS',
-          icon: Layers
-        },
-        {
-          id: 'activity-log',
-          label: 'Aktivitas & Log Audit',
-          description: 'Riwayat login & pembaruan data',
-          icon: Activity
-        },
-        {
-          id: 'user-profile',
-          label: 'Profil & Hak Akses',
-          description: 'Detail otentikasi & peran aktif',
-          icon: Users
+          categoryTitle: 'SISTEM & AKUN',
+          items: [
+            { id: 'activity-log', label: 'Log Aktivitas Sistem', icon: Activity },
+            { id: 'user-profile', label: 'Profil & Hak Akses', icon: Users }
+          ]
         }
       ]
     },
@@ -135,40 +127,34 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       show: hasPermission('e-surat:read') || hasPermission('letter.view'),
       badge: pendingLettersCount > 0 && (activeRole === 'KEPALA_SEKOLAH' || activeRole === 'ADMIN' || activeRole === 'SUPER_ADMIN') ? `${pendingLettersCount}` : undefined,
       badgeColor: 'bg-rose-500 text-white',
-      description: 'Layanan persuratan dinas & tanda tangan elektronik',
-      subMenus: [
+      description: 'Layanan persuratan dinas & approval tanda tangan digital PIN',
+      categories: [
         {
-          id: 'outbox',
-          label: 'Surat Keluar (Arsip)',
-          description: 'Daftar semua arsip surat terbit',
-          icon: FileText
+          categoryTitle: 'INFORMASI & STATUS',
+          items: [
+            { id: 'outbox', label: 'Dashboard Surat', icon: Mail },
+            {
+              id: 'pending_sign',
+              label: 'Menunggu E-TTD',
+              icon: ShieldCheck,
+              badge: pendingLettersCount > 0 ? `${pendingLettersCount}` : undefined,
+              badgeColor: 'bg-rose-500 text-white font-bold'
+            }
+          ]
         },
         {
-          id: 'pending_sign',
-          label: 'Menunggu E-TTD Kepsek',
-          description: 'Approval & verifikasi tanda tangan PIN',
-          icon: ShieldCheck,
-          badge: pendingLettersCount > 0 ? `${pendingLettersCount} Baru` : undefined,
-          badgeColor: 'bg-rose-500 text-white font-bold'
+          categoryTitle: 'SURAT KELUAR & MASUK',
+          items: [
+            { id: 'create', label: 'Buat Surat Baru', icon: PlusCircle },
+            { id: 'outbox', label: 'Arsip Surat Keluar', icon: FileText },
+            { id: 'inbox', label: 'Surat Masuk & Disposisi', icon: Mail }
+          ]
         },
         {
-          id: 'create',
-          label: 'Buat Surat Baru',
-          description: 'Form otomatis & template surat resmi',
-          icon: PlusCircle
-        },
-        {
-          id: 'inbox',
-          label: 'Surat Masuk & Disposisi',
-          description: 'Agenda surat masuk & disposisi digital',
-          icon: Mail
-        },
-        {
-          id: 'public_verify',
-          label: 'Verifikasi QR Publik',
-          description: 'Buka scanner validasi dokumen',
-          icon: CheckCircle2,
-          path: '/verify'
+          categoryTitle: 'VERIFIKASI & LEGALITAS',
+          items: [
+            { id: 'public_verify', label: 'Verifikasi Dokumen QR', icon: CheckCircle2, path: '/verify' }
+          ]
         }
       ]
     },
@@ -180,24 +166,37 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       path: '/portal/e-jurnal',
       show: hasPermission('e-jurnal:read') || hasPermission('journal.view'),
       description: 'Jurnal KBM harian, jadwal & rekap penilaian guru',
-      subMenus: [
+      categories: [
         {
-          id: 'journals',
-          label: 'Riwayat Jurnal KBM',
-          description: 'Daftar materi & catatan harian mengajar',
-          icon: BookOpen
+          categoryTitle: 'INFORMASI & PERIODE',
+          items: [
+            { id: 'journals', label: 'Dashboard Jurnal', icon: LayoutDashboard },
+            { id: 'schedules', label: 'Semester & Jadwal TA', icon: Calendar }
+          ]
         },
         {
-          id: 'schedules',
-          label: 'Jadwal Pembelajaran',
-          description: 'Jadwal tatap muka & alokasi jam kelas',
-          icon: Clock
+          categoryTitle: 'DATA MASTER',
+          items: [
+            { id: 'journals', label: 'Data Kelas', icon: Layers },
+            { id: 'journals', label: 'Data Siswa', icon: Users },
+            { id: 'schedules', label: 'Mapel & Guru', icon: BookOpen }
+          ]
         },
         {
-          id: 'grades',
-          label: 'Buku Nilai Siswa',
-          description: 'Rekapitulasi asesmen & nilai formatif',
-          icon: Award
+          categoryTitle: 'INPUT HARIAN',
+          items: [
+            { id: 'grades', label: 'Bobot & Kriteria Nilai', icon: Scale },
+            { id: 'journals', label: 'Input Jurnal Mengajar', icon: FileText },
+            { id: 'grades', label: 'Input Nilai Siswa', icon: Award }
+          ]
+        },
+        {
+          categoryTitle: 'LAPORAN & REKAP',
+          items: [
+            { id: 'journals', label: 'Rekap Semua (Excel)', icon: FileSpreadsheet },
+            { id: 'journals', label: 'Rekap Jurnal KBM', icon: FileText },
+            { id: 'grades', label: 'Rekap Nilai Format', icon: Award }
+          ]
         }
       ]
     },
@@ -209,24 +208,20 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       path: '/portal/e-presensi',
       show: hasPermission('e-presensi:read') || hasPermission('attendance.view'),
       description: 'Presensi dinamis QR code & notifikasi kehadiran realtime',
-      subMenus: [
+      categories: [
         {
-          id: 'live_qr',
-          label: 'Live QR Code Presensi',
-          description: 'QR dinamis berpenghitung mundur',
-          icon: QrCode
+          categoryTitle: 'LIVE MONITORING',
+          items: [
+            { id: 'live_qr', label: 'Live QR Code Presensi', icon: QrCode }
+          ]
         },
         {
-          id: 'history',
-          label: 'Log Presensi Harian',
-          description: 'Rekap kehadiran santri & guru harian',
-          icon: Calendar
-        },
-        {
-          id: 'notifications',
-          label: 'Notifikasi Ortu',
-          description: 'Broadcast status kehadiran ke wali',
-          icon: Bell
+          categoryTitle: 'LOG & REKAP KEHADIRAN',
+          items: [
+            { id: 'history', label: 'Log Presensi Harian', icon: Calendar },
+            { id: 'history', label: 'Rekap Kehadiran Bulanan', icon: FileSpreadsheet },
+            { id: 'notifications', label: 'Notifikasi WhatsApp Ortu', icon: Bell }
+          ]
         }
       ]
     },
@@ -238,24 +233,19 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       path: '/portal/e-poin',
       show: hasPermission('e-poin:read') || hasPermission('point.view'),
       description: 'Pencatatan poin apresiasi prestasi & kedisiplinan santri',
-      subMenus: [
+      categories: [
         {
-          id: 'transactions',
-          label: 'Catatan Poin Siswa',
-          description: 'Log transaksi reward & pelanggaran',
-          icon: Award
+          categoryTitle: 'DATA POIN SANTRI',
+          items: [
+            { id: 'transactions', label: 'Catatan Poin Siswa', icon: Award },
+            { id: 'leaderboard', label: 'Santri Teladan (Top 10)', icon: Trophy }
+          ]
         },
         {
-          id: 'leaderboard',
-          label: 'Peringkat Santri Teladan',
-          description: 'Top santri berprestasi',
-          icon: Trophy
-        },
-        {
-          id: 'categories',
-          label: 'Katalog & Kriteria Poin',
-          description: 'Daftar pedoman poin reward & sanksi',
-          icon: Filter
+          categoryTitle: 'MASTER & ATURAN',
+          items: [
+            { id: 'categories', label: 'Katalog Kriteria Poin', icon: Filter }
+          ]
         }
       ]
     },
@@ -267,18 +257,13 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       path: '/portal/e-kelulusan',
       show: hasPermission('e-kelulusan:read') || hasPermission('graduation.view'),
       description: 'Penerbitan Surat Keterangan Lulus & portal pengumuman',
-      subMenus: [
+      categories: [
         {
-          id: 'records',
-          label: 'Daftar SKL Santri',
-          description: 'Surat Keterangan Lulus ber-barcode resmi',
-          icon: GraduationCap
-        },
-        {
-          id: 'publish',
-          label: 'Status Pengumuman',
-          description: 'Publikasi kelulusan & cetak berkas',
-          icon: CheckCircle2
+          categoryTitle: 'DOKUMEN & PENGUMUMAN',
+          items: [
+            { id: 'records', label: 'Daftar SKL Santri', icon: GraduationCap },
+            { id: 'publish', label: 'Status Pengumuman', icon: CheckCircle2 }
+          ]
         }
       ]
     },
@@ -290,46 +275,60 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       path: '/portal/cms',
       show: hasPermission('cms:edit') || hasPermission('cms.edit') || hasPermission('cms.view'),
       badge: 'Drive',
-      badgeColor: 'bg-emerald-600 text-white',
+      badgeColor: 'bg-emerald-500 text-teal-950 font-bold',
       description: 'Pengaturan identitas sekolah, berita & drive media',
-      subMenus: [
+      categories: [
         {
-          id: 'media',
-          label: 'Drive Media Situs',
-          description: 'Ruang penyimpanan foto & aset ala WordPress',
-          icon: HardDrive,
-          badge: `${mediaAssets.length} Aset`,
-          badgeColor: 'bg-teal-700 text-white'
+          categoryTitle: 'DRIVE MEDIA SITUS',
+          items: [
+            {
+              id: 'media',
+              label: 'Drive Media (WordPress)',
+              icon: HardDrive,
+              badge: `${mediaAssets.length}`,
+              badgeColor: 'bg-emerald-400 text-teal-950 font-bold'
+            },
+            { id: 'slides', label: 'Carousel Hero Slides', icon: ImageIcon }
+          ]
         },
         {
-          id: 'identity',
-          label: 'Identitas & TTD Kepsek',
-          description: 'Logo, banner 1343x342, spesimen TTD',
-          icon: School
+          categoryTitle: 'KONTEN & PUBLIKASI',
+          items: [
+            { id: 'news', label: 'Berita & Pengumuman', icon: Newspaper },
+            { id: 'identity', label: 'Identitas & TTD Kepsek', icon: School }
+          ]
         },
         {
-          id: 'slides',
-          label: 'Carousel Hero Slides',
-          description: 'Banner berputar halaman beranda',
-          icon: ImageIcon
+          categoryTitle: 'NAVIGASI & INTEGRASI',
+          items: [
+            { id: 'services', label: 'Integrasi Layanan GAS', icon: LinkIcon },
+            { id: 'navigation', label: 'Menu Navigasi Publik', icon: Sliders }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'setting',
+      label: 'Setting & Master Data',
+      shortLabel: 'Setting',
+      icon: Sliders,
+      path: '/portal/setting',
+      show: true,
+      description: 'Manajemen akun, hak akses role, data guru, rombel kelas, dan santri',
+      categories: [
+        {
+          categoryTitle: 'AKUN & HAK AKSES',
+          items: [
+            { id: 'accounts', label: 'Manage Account', icon: ShieldCheck }
+          ]
         },
         {
-          id: 'news',
-          label: 'Berita & Pengumuman',
-          description: 'Manajemen artikel & karya santri',
-          icon: Newspaper
-        },
-        {
-          id: 'services',
-          label: 'Integrasi Layanan & GAS',
-          description: 'Pengaturan link aplikasi eksternal',
-          icon: LinkIcon
-        },
-        {
-          id: 'navigation',
-          label: 'Menu Navigasi Publik',
-          description: 'Struktur navbar website publik',
-          icon: Sliders
+          categoryTitle: 'DATA MASTER AKADEMIK',
+          items: [
+            { id: 'teachers', label: 'Data Guru', icon: GraduationCap },
+            { id: 'classes', label: 'Data Kelas', icon: Layers },
+            { id: 'students', label: 'Data Siswa', icon: Users }
+          ]
         }
       ]
     }
@@ -343,13 +342,20 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
     return currentSection.startsWith(m.path) || currentSection.startsWith(m.path.substring(1));
   }) || modules[0];
 
+  // Default active subtab to first item if empty
+  useEffect(() => {
+    if (!activeSubTab && activeModule.categories[0]?.items[0]) {
+      setActiveSubTab(activeModule.categories[0].items[0].id);
+    }
+  }, [activeModule]);
+
   // Switch Sub-Tab handler
-  const handleSubMenuClick = (sub: SubMenuItem) => {
-    setActiveSubTab(sub.id);
+  const handleSubMenuClick = (item: { id: string; label: string; path?: string }) => {
+    setActiveSubTab(item.id);
     setMobileDrawerOpen(false);
 
-    if (sub.path) {
-      navigate(sub.path);
+    if (item.path) {
+      navigate(item.path);
       return;
     }
 
@@ -361,14 +367,18 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
     // Dispatch global event for the submodule to update its internal tab state
     window.dispatchEvent(
       new CustomEvent('portal-subtab-change', {
-        detail: { module: activeModule.id, tab: sub.id }
+        detail: { module: activeModule.id, tab: item.id }
       })
     );
   };
 
   const handleModuleClick = (mod: PrimaryModule) => {
     navigate(mod.path);
-    setActiveSubTab('');
+    if (mod.categories[0]?.items[0]) {
+      setActiveSubTab(mod.categories[0].items[0].id);
+    } else {
+      setActiveSubTab('');
+    }
     setMobileDrawerOpen(false);
   };
 
@@ -395,17 +405,11 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
     }
   };
 
-  // Filtered sub-menus based on search inside secondary sidebar
-  const filteredSubMenus = activeModule.subMenus.filter((sub) =>
-    sub.label.toLowerCase().includes(subMenuSearch.toLowerCase()) ||
-    (sub.description && sub.description.toLowerCase().includes(subMenuSearch.toLowerCase()))
-  );
-
   return (
-    <div className="min-h-screen bg-[#f4f7f6] text-teal-950 flex flex-col antialiased selection:bg-teal-500 selection:text-white">
+    <div className="h-screen flex flex-col overflow-hidden bg-[#f4f7f6] text-teal-950 antialiased selection:bg-teal-500 selection:text-white">
       
-      {/* Top Header Bar for Portal (Slim, Unified Breadcrumb, Actions & Profile) */}
-      <header className="sticky top-0 z-40 h-16 bg-white/85 backdrop-blur-xl border-b border-teal-100/90 shadow-2xs px-4 sm:px-6 flex items-center justify-between transition-all">
+      {/* Top Header Bar for Portal (Sticky, Unified Breadcrumb, Actions & Profile) */}
+      <header className="sticky top-0 z-40 h-16 shrink-0 bg-white/95 backdrop-blur-xl border-b border-teal-100/90 shadow-2xs px-4 sm:px-6 flex items-center justify-between transition-all">
         
         {/* Left: Mobile Toggle & Breadcrumb */}
         <div className="flex items-center gap-3">
@@ -453,7 +457,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
                 <>
                   <ChevronRight className="w-3.5 h-3.5 text-teal-400" />
                   <span className="text-teal-950 font-bold capitalize">
-                    {activeModule.subMenus.find((s) => s.id === activeSubTab)?.label || activeSubTab}
+                    {activeModule.categories.flatMap(c => c.items).find(i => i.id === activeSubTab)?.label || activeSubTab}
                   </span>
                 </>
               )}
@@ -583,9 +587,9 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       <div className="flex-1 flex overflow-hidden">
         
         {/* ========================================================= */}
-        {/* SIDEBAR 1: PRIMARY MAIN MODULE RAIL (Desktop Left)       */}
+        {/* SIDEBAR 1: PRIMARY MAIN MODULE RAIL (STICKY & LOCKED)     */}
         {/* ========================================================= */}
-        <aside className="hidden lg:flex flex-col justify-between w-[76px] shrink-0 bg-[#09221e] border-r border-[#153a34] text-slate-300 py-4 px-2 z-30 select-none shadow-md shadow-teal-950/20">
+        <aside className="hidden lg:flex flex-col justify-between w-[76px] shrink-0 bg-[#09221e] border-r border-[#153a34] text-slate-300 py-4 px-2 select-none shadow-md shadow-teal-950/20 z-30 h-full overflow-y-auto">
           
           {/* Top Primary Navigation Modules */}
           <div className="space-y-4">
@@ -652,134 +656,69 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
         </aside>
 
         {/* ========================================================= */}
-        {/* SIDEBAR 2: SECONDARY SUB-MENU & SYSTEM SIDEBAR           */}
+        {/* SIDEBAR 2: SECONDARY SUB-MENU (RINGKAS & STICKY THEME)    */}
+        {/* Styled matching the user's reference screenshot          */}
         {/* ========================================================= */}
         <aside
-          className={`hidden lg:flex flex-col justify-between shrink-0 bg-white border-r border-teal-100/90 transition-all duration-300 z-20 shadow-xs ${
-            isSecondaryCollapsed ? 'w-0 overflow-hidden opacity-0 border-none' : 'w-[268px] opacity-100'
+          className={`hidden lg:flex flex-col justify-between shrink-0 bg-[#2b6570] text-teal-50 border-r border-[#22535d] transition-all duration-300 z-20 shadow-md h-full select-none ${
+            isSecondaryCollapsed ? 'w-0 overflow-hidden opacity-0 border-none' : 'w-[236px] opacity-100'
           }`}
         >
-          <div className="flex-1 flex flex-col h-full overflow-y-auto p-4 space-y-4">
+          {/* Scrollable Sub-Menu List */}
+          <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-5 scrollbar-thin scrollbar-thumb-teal-800/40">
             
-            {/* Active Module Header Card */}
-            <div className="p-3.5 rounded-2xl bg-gradient-to-br from-teal-50 via-teal-50/50 to-emerald-50/30 border border-teal-100/80 shadow-2xs">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="px-2 py-0.5 rounded-md bg-teal-800 text-white font-mono text-[9px] font-extrabold uppercase tracking-wider">
-                  Modul Sistem
-                </span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Sistem Aktif" />
-              </div>
-              <h2 className="font-heading font-extrabold text-sm text-teal-950 flex items-center gap-2">
-                <activeModule.icon className="w-4 h-4 text-teal-700 shrink-0" />
-                <span className="truncate">{activeModule.label}</span>
-              </h2>
-              <p className="text-[11px] text-slate-600 mt-1 line-clamp-2 leading-relaxed">
-                {activeModule.description}
-              </p>
-            </div>
+            {/* Render Grouped Categories */}
+            {activeModule.categories.map((group, gIdx) => (
+              <div key={gIdx} className="space-y-1.5">
+                {/* Category Header Label (Uppercase tracked font) */}
+                <h3 className="text-[10px] font-extrabold uppercase tracking-wider text-teal-200/70 px-2.5">
+                  {group.categoryTitle}
+                </h3>
 
-            {/* Sub-menu Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Cari menu sub-sistem..."
-                value={subMenuSearch}
-                onChange={(e) => setSubMenuSearch(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-slate-50 border border-teal-100/80 text-xs text-teal-950 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:bg-white transition-all"
-              />
-            </div>
+                {/* Sub Menu Items (Ringkas: Icon + Title only) */}
+                <div className="space-y-1">
+                  {group.items.map((item, itemIdx) => {
+                    const ItemIcon = item.icon;
+                    const isItemActive = activeSubTab === item.id;
 
-            {/* Sub-menu System Navigation List */}
-            <div className="space-y-1">
-              <div className="px-2 pb-1 flex items-center justify-between">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">
-                  Sub Menu Sistem
-                </span>
-                <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-1.5 py-0.2 rounded">
-                  {filteredSubMenus.length}
-                </span>
-              </div>
-
-              <div className="space-y-1">
-                {filteredSubMenus.map((sub) => {
-                  const SubIcon = sub.icon;
-                  const isSubActive = activeSubTab === sub.id;
-
-                  return (
-                    <button
-                      key={sub.id}
-                      onClick={() => handleSubMenuClick(sub)}
-                      className={`w-full group flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all duration-150 cursor-pointer ${
-                        isSubActive
-                          ? 'bg-teal-50/90 text-teal-950 font-bold border border-teal-200/80 shadow-2xs'
-                          : 'text-slate-700 hover:bg-slate-50 hover:text-teal-900 border border-transparent'
-                      }`}
-                    >
-                      <div className={`p-1.5 rounded-lg shrink-0 mt-0.5 transition-colors ${
-                        isSubActive
-                          ? 'bg-teal-600 text-white shadow-2xs'
-                          : 'bg-slate-100 text-slate-500 group-hover:bg-teal-100 group-hover:text-teal-800'
-                      }`}>
-                        <SubIcon className="w-3.5 h-3.5" />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-1">
-                          <span className="text-xs font-bold truncate">
-                            {sub.label}
+                    return (
+                      <button
+                        key={`${item.id}-${itemIdx}`}
+                        onClick={() => handleSubMenuClick(item)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
+                          isItemActive
+                            ? 'bg-white text-[#214f57] font-bold shadow-sm'
+                            : 'text-teal-100/90 hover:text-white hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <ItemIcon className={`w-4 h-4 shrink-0 ${isItemActive ? 'text-[#214f57]' : 'text-teal-200/80'}`} />
+                          <span className="truncate leading-tight">
+                            {item.label}
                           </span>
-                          {sub.badge && (
-                            <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold shrink-0 ${sub.badgeColor || 'bg-teal-100 text-teal-800'}`}>
-                              {sub.badge}
-                            </span>
-                          )}
                         </div>
-                        {sub.description && (
-                          <p className="text-[10px] text-slate-600 truncate mt-0.5">
-                            {sub.description}
-                          </p>
+
+                        {item.badge && (
+                          <span className={`px-1.5 py-0.2 rounded text-[9px] font-black shrink-0 ${item.badgeColor || 'bg-amber-400 text-teal-950'}`}>
+                            {item.badge}
+                          </span>
                         )}
-                      </div>
-                    </button>
-                  );
-                })}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            ))}
 
-            {/* Quick Context Action based on Active Module */}
-            {activeModule.id === 'e-surat' && (
-              <div className="pt-2 border-t border-slate-100">
-                <button
-                  onClick={() => handleSubMenuClick({ id: 'create', label: 'Buat Surat Baru', icon: PlusCircle })}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-teal-700 to-emerald-700 hover:from-teal-800 hover:to-emerald-800 shadow-sm shadow-teal-950/10 transition-all cursor-pointer"
-                >
-                  <PlusCircle className="w-4 h-4" />
-                  <span>+ Buat Surat Baru</span>
-                </button>
-              </div>
-            )}
-
-            {activeModule.id === 'cms' && (
-              <div className="pt-2 border-t border-slate-100">
-                <button
-                  onClick={() => handleSubMenuClick({ id: 'media', label: 'Drive Media Situs', icon: HardDrive })}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-teal-900 bg-teal-50 hover:bg-teal-100 border border-teal-200/80 shadow-2xs transition-all cursor-pointer"
-                >
-                  <HardDrive className="w-4 h-4 text-teal-700" />
-                  <span>Buka Drive Media</span>
-                </button>
-              </div>
-            )}
           </div>
 
-          {/* Secondary Sidebar Footer Card */}
-          <div className="p-3 border-t border-teal-100/70 bg-slate-50/60 flex items-center justify-between text-[11px] text-slate-500">
+          {/* Sticky Secondary Sidebar Footer */}
+          <div className="p-3 border-t border-teal-700/60 bg-[#22535d]/70 flex items-center justify-between text-[11px] text-teal-200/80">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-teal-600" />
-              <span className="font-bold text-teal-950">{getRoleDisplayName(activeRole)}</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="font-bold text-white truncate max-w-[140px]">{getRoleDisplayName(activeRole)}</span>
             </div>
-            <span className="font-mono text-[10px]">Al Hikmah v2.6</span>
+            <span className="font-mono text-[10px] text-teal-300">Al Hikmah</span>
           </div>
         </aside>
 
@@ -787,7 +726,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
         <div className="hidden lg:flex items-center">
           <button
             onClick={() => setIsSecondaryCollapsed(!isSecondaryCollapsed)}
-            className="w-4 h-12 -ml-2 z-30 flex items-center justify-center rounded-r-md bg-white border border-l-0 border-teal-200/90 text-teal-700 hover:text-teal-950 hover:bg-teal-50 shadow-2xs transition-all cursor-pointer"
+            className="w-4 h-12 -ml-2 z-30 flex items-center justify-center rounded-r-md bg-[#2b6570] border border-l-0 border-[#22535d] text-teal-100 hover:text-white hover:bg-[#22535d] shadow-sm transition-all cursor-pointer"
             title={isSecondaryCollapsed ? 'Tampilkan Sidebar Sub Menu' : 'Sembunyikan Sidebar'}
           >
             {isSecondaryCollapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
@@ -809,7 +748,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
             <div className="relative flex w-full max-w-sm bg-white shadow-2xl z-50 h-full animate-in slide-in-from-left duration-200">
               
               {/* Primary Rail in Mobile Drawer */}
-              <div className="w-20 bg-[#09221e] text-slate-300 py-4 px-1.5 flex flex-col justify-between shrink-0">
+              <div className="w-20 bg-[#09221e] text-slate-300 py-4 px-1.5 flex flex-col justify-between shrink-0 h-full overflow-y-auto">
                 <div className="space-y-3">
                   <div className="w-10 h-10 mx-auto rounded-xl bg-teal-700 text-white flex items-center justify-center font-bold">
                     <School className="w-6 h-6" />
@@ -852,59 +791,68 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
                 </button>
               </div>
 
-              {/* Secondary Submenu Column in Mobile Drawer */}
-              <div className="flex-1 flex flex-col justify-between p-4 overflow-y-auto bg-white">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              {/* Secondary Submenu Column in Mobile Drawer (Teal Theme Matching Screenshot) */}
+              <div className="flex-1 flex flex-col justify-between p-4 overflow-y-auto bg-[#2b6570] text-teal-50 h-full">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-teal-700/60">
                     <div>
-                      <h3 className="font-heading font-extrabold text-sm text-teal-950">
+                      <h3 className="font-heading font-extrabold text-sm text-white">
                         {activeModule.label}
                       </h3>
-                      <p className="text-[10px] text-slate-500">Sub Menu Sistem</p>
+                      <p className="text-[10px] text-teal-200/80">Menu Sistem</p>
                     </div>
                     <button
                       onClick={() => setMobileDrawerOpen(false)}
-                      className="p-1 rounded-lg text-slate-400 hover:bg-slate-100"
+                      className="p-1 rounded-lg text-teal-200 hover:bg-white/10"
                     >
                       <X className="w-5 h-5" />
                     </button>
                   </div>
 
-                  <div className="space-y-1">
-                    {activeModule.subMenus.map((sub) => {
-                      const SubIcon = sub.icon;
-                      const isSubActive = activeSubTab === sub.id;
+                  {activeModule.categories.map((group, gIdx) => (
+                    <div key={gIdx} className="space-y-1.5">
+                      <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-teal-200/70 px-2">
+                        {group.categoryTitle}
+                      </h4>
+                      <div className="space-y-1">
+                        {group.items.map((item, itemIdx) => {
+                          const ItemIcon = item.icon;
+                          const isItemActive = activeSubTab === item.id;
 
-                      return (
-                        <button
-                          key={sub.id}
-                          onClick={() => handleSubMenuClick(sub)}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left cursor-pointer ${
-                            isSubActive
-                              ? 'bg-teal-50 text-teal-950 font-bold border border-teal-200'
-                              : 'text-slate-700 hover:bg-slate-50'
-                          }`}
-                        >
-                          <SubIcon className="w-4 h-4 text-teal-600 shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold truncate">{sub.label}</p>
-                            {sub.description && (
-                              <p className="text-[10px] text-slate-600 truncate">{sub.description}</p>
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          return (
+                            <button
+                              key={`${item.id}-${itemIdx}`}
+                              onClick={() => handleSubMenuClick(item)}
+                              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                                isItemActive
+                                  ? 'bg-white text-[#214f57] font-bold shadow-sm'
+                                  : 'text-teal-100 hover:text-white hover:bg-white/10'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <ItemIcon className={`w-4 h-4 shrink-0 ${isItemActive ? 'text-[#214f57]' : 'text-teal-200'}`} />
+                                <span className="truncate">{item.label}</span>
+                              </div>
+                              {item.badge && (
+                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-400 text-teal-950">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="pt-3 border-t border-slate-100">
+                <div className="pt-3 border-t border-teal-700/60">
                   <button
                     onClick={() => {
                       setMobileDrawerOpen(false);
                       navigate('/');
                     }}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold text-teal-800 bg-teal-50 rounded-xl"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-bold text-white bg-white/15 hover:bg-white/20 rounded-xl"
                   >
                     <ExternalLink className="w-4 h-4" />
                     <span>Lihat Web Publik</span>
@@ -916,7 +864,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
         )}
 
         {/* ========================================================= */}
-        {/* MAIN WORKSPACE CONTENT AREA                              */}
+        {/* MAIN WORKSPACE CONTENT AREA (INDEPENDENT SCROLL)          */}
         {/* ========================================================= */}
         <main className="flex-1 overflow-y-auto bg-[#f4f7f6] p-4 sm:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto space-y-6">

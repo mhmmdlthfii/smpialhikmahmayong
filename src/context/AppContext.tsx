@@ -128,6 +128,16 @@ interface AppContextType {
   academicYears: AcademicYear[];
   addStudent: (student: Omit<Student, 'id'>) => void;
   updateStudent: (id: string, updates: Partial<Student>) => void;
+  deleteStudent: (id: string) => void;
+  addTeacher: (teacher: Omit<Teacher, 'id'>) => void;
+  updateTeacher: (id: string, updates: Partial<Teacher>) => void;
+  deleteTeacher: (id: string) => void;
+  addClass: (cls: Omit<ClassRoom, 'id'>) => void;
+  updateClass: (id: string, updates: Partial<ClassRoom>) => void;
+  deleteClass: (id: string) => void;
+  addSubject: (subject: Omit<Subject, 'id'>) => void;
+  updateSubject: (id: string, updates: Partial<Subject>) => void;
+  deleteSubject: (id: string) => void;
 
   // CMS
   news: NewsItem[];
@@ -668,12 +678,97 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...studentData
     };
     setStudents((prev) => [...prev, newStudent]);
+    logAudit({
+      userId: 'usr-current',
+      userName: 'Administrator',
+      userRole: 'ADMIN',
+      action: 'CREATE',
+      module: 'Master Data',
+      recordId: newStudent.id,
+      description: `Menambahkan data santri baru: ${newStudent.name} (${newStudent.nisn})`
+    });
   };
 
   const updateStudent = (id: string, updates: Partial<Student>) => {
     setStudents((prev) =>
       prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
     );
+  };
+
+  const deleteStudent = (id: string) => {
+    setStudents((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const addTeacher = (teacherData: Omit<Teacher, 'id'>) => {
+    const newTeacher: Teacher = {
+      id: `tch-${Date.now()}`,
+      ...teacherData
+    };
+    setTeachers((prev) => [...prev, newTeacher]);
+    logAudit({
+      userId: 'usr-current',
+      userName: 'Administrator',
+      userRole: 'ADMIN',
+      action: 'CREATE',
+      module: 'Master Data',
+      recordId: newTeacher.id,
+      description: `Menambahkan data guru baru: ${newTeacher.name} (${newTeacher.nip})`
+    });
+  };
+
+  const updateTeacher = (id: string, updates: Partial<Teacher>) => {
+    setTeachers((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
+    );
+  };
+
+  const deleteTeacher = (id: string) => {
+    setTeachers((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const addClass = (clsData: Omit<ClassRoom, 'id'>) => {
+    const newClass: ClassRoom = {
+      id: `cls-${Date.now()}`,
+      ...clsData
+    };
+    setClasses((prev) => [...prev, newClass]);
+    logAudit({
+      userId: 'usr-current',
+      userName: 'Administrator',
+      userRole: 'ADMIN',
+      action: 'CREATE',
+      module: 'Master Data',
+      recordId: newClass.id,
+      description: `Menambahkan rombel kelas baru: ${newClass.name}`
+    });
+  };
+
+  const updateClass = (id: string, updates: Partial<ClassRoom>) => {
+    setClasses((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, ...updates } : c))
+    );
+  };
+
+  const deleteClass = (id: string) => {
+    setClasses((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const addSubject = (subData: Omit<Subject, 'id'>) => {
+    const newSub: Subject = {
+      id: `sub-${Date.now()}`,
+      ...subData
+    };
+    setSubjects((prev) => [...prev, newSub]);
+  };
+
+  const updateSubject = (id: string, updates: Partial<Subject>) => {
+    setSubjects((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
+    );
+  };
+
+  const deleteSubject = (id: string) => {
+    setSubjects((prev) => prev.filter((s) => s.id !== id));
   };
 
   // 10. CMS News & Settings
@@ -944,6 +1039,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         academicYears,
         addStudent,
         updateStudent,
+        deleteStudent,
+        addTeacher,
+        updateTeacher,
+        deleteTeacher,
+        addClass,
+        updateClass,
+        deleteClass,
+        addSubject,
+        updateSubject,
+        deleteSubject,
 
         news,
         events,
