@@ -183,44 +183,46 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featuredNews.map((item) => (
               <div
                 key={item.id}
                 onClick={() => navigate(`/berita/${item.slug}`)}
-                className="group glass-card rounded-2xl overflow-hidden cursor-pointer flex flex-col justify-between border-teal-100"
+                className="group relative bg-white rounded-3xl overflow-hidden cursor-pointer flex flex-col justify-between shadow-sm hover:shadow-2xl hover:shadow-teal-950/20 hover:-translate-y-1.5 transition-all duration-300"
               >
                 <div>
                   <div className="relative h-48 overflow-hidden bg-teal-50">
                     <img
                       src={item.coverImage || item.imageUrl || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80'}
                       alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-teal-700 text-white shadow-md">
+                    <span className="absolute top-3 left-3 px-3 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider bg-teal-800/90 backdrop-blur-xs text-white shadow-md">
                       {item.category}
                     </span>
                   </div>
 
-                  <div className="p-5 space-y-2">
-                    <div className="flex items-center gap-2 text-[11px] text-teal-800/60">
-                      <Clock className="w-3 h-3" />
+                  <div className="p-6 space-y-2.5">
+                    <div className="flex items-center gap-2 text-[11px] text-teal-800/70 font-medium">
+                      <Clock className="w-3.5 h-3.5 text-teal-600" />
                       <span>{item.publishedAt || item.date}</span>
                     </div>
 
-                    <h3 className="font-heading font-bold text-base text-teal-950 group-hover:text-teal-700 transition-colors line-clamp-2">
+                    <h3 className="font-heading font-bold text-base text-teal-950 group-hover:text-teal-700 transition-colors line-clamp-2 leading-snug">
                       {item.title}
                     </h3>
 
-                    <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                       {item.summary || item.content}
                     </p>
                   </div>
                 </div>
 
-                <div className="px-5 pb-5 pt-2 flex items-center justify-between text-xs font-bold text-teal-700">
+                <div className="px-6 pb-6 pt-3 flex items-center justify-between text-xs font-bold text-teal-700 border-t border-slate-50">
                   <span>Baca Selengkapnya</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <div className="w-7 h-7 rounded-xl bg-teal-50 group-hover:bg-teal-700 group-hover:text-white flex items-center justify-center transition-all duration-300">
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
                 </div>
               </div>
             ))}

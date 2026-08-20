@@ -95,23 +95,23 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({
         {/* Card 1: E-Surat Status */}
         <div
           onClick={() => navigate('/portal/e-surat')}
-          className="glass-card p-5 rounded-2xl cursor-pointer hover:border-teal-400 border-teal-100 shadow-xs transition-all space-y-3"
+          className="group p-6 rounded-3xl cursor-pointer bg-white hover:bg-gradient-to-br hover:from-[#063b33] hover:via-[#042822] hover:to-[#021815] shadow-sm hover:shadow-2xl hover:shadow-emerald-950/30 hover:-translate-y-1.5 transition-all duration-300 space-y-3"
         >
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center">
-              <Mail className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 group-hover:bg-emerald-500/20 group-hover:text-emerald-300 flex items-center justify-center transition-all duration-300">
+              <Mail className="w-6 h-6" />
             </div>
             {pendingLetters.length > 0 && (
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+              <span className="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-amber-100 text-amber-900 group-hover:bg-amber-400/20 group-hover:text-amber-200 transition-colors duration-300">
                 {pendingLetters.length} Menunggu TTD
               </span>
             )}
           </div>
           <div>
-            <p className="text-2xl font-heading font-extrabold text-teal-950">
+            <p className="text-2xl font-heading font-extrabold text-teal-950 group-hover:text-white transition-colors duration-300">
               {letters.length} Dokumen
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 group-hover:text-teal-100/80 transition-colors duration-300">
               {signedLetters.length} Surat Sah Ber-ETTD
             </p>
           </div>
@@ -120,21 +120,21 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({
         {/* Card 2: E-Presensi Hari Ini */}
         <div
           onClick={() => navigate('/portal/e-presensi')}
-          className="glass-card p-5 rounded-2xl cursor-pointer hover:border-amber-400 border-teal-100 shadow-xs transition-all space-y-3"
+          className="group p-6 rounded-3xl cursor-pointer bg-white hover:bg-gradient-to-br hover:from-[#063b33] hover:via-[#042822] hover:to-[#021815] shadow-sm hover:shadow-2xl hover:shadow-emerald-950/30 hover:-translate-y-1.5 transition-all duration-300 space-y-3"
         >
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
-              <QrCode className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 group-hover:bg-emerald-500/20 group-hover:text-emerald-300 flex items-center justify-center transition-all duration-300">
+              <QrCode className="w-6 h-6" />
             </div>
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-emerald-100 text-emerald-900 group-hover:bg-emerald-400/20 group-hover:text-emerald-200 transition-colors duration-300">
               Live QR Aktif
             </span>
           </div>
           <div>
-            <p className="text-2xl font-heading font-extrabold text-teal-950">
+            <p className="text-2xl font-heading font-extrabold text-teal-950 group-hover:text-white transition-colors duration-300">
               98.2% Hadir
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 group-hover:text-teal-100/80 transition-colors duration-300">
               {todayAttendances.length} Log Presensi Hari Ini
             </p>
           </div>
@@ -143,21 +143,21 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({
         {/* Card 3: E-Jurnal */}
         <div
           onClick={() => navigate('/portal/e-jurnal')}
-          className="glass-card p-5 rounded-2xl cursor-pointer hover:border-teal-400 border-teal-100 shadow-xs transition-all space-y-3"
+          className="group p-6 rounded-3xl cursor-pointer bg-white hover:bg-gradient-to-br hover:from-[#063b33] hover:via-[#042822] hover:to-[#021815] shadow-sm hover:shadow-2xl hover:shadow-emerald-950/30 hover:-translate-y-1.5 transition-all duration-300 space-y-3"
         >
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
-              <BookOpen className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 group-hover:bg-emerald-500/20 group-hover:text-emerald-300 flex items-center justify-center transition-all duration-300">
+              <BookOpen className="w-6 h-6" />
             </div>
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-teal-100 text-teal-800 border border-teal-200">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-teal-100 text-teal-900 group-hover:bg-teal-400/20 group-hover:text-teal-200 transition-colors duration-300">
               100% Sesuai RPP
             </span>
           </div>
           <div>
-            <p className="text-2xl font-heading font-extrabold text-teal-950">
+            <p className="text-2xl font-heading font-extrabold text-teal-950 group-hover:text-white transition-colors duration-300">
               {journals.length} Jurnal
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 group-hover:text-teal-100/80 transition-colors duration-300">
               Agenda Mengajar Guru Terverifikasi
             </p>
           </div>
@@ -166,21 +166,21 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({
         {/* Card 4: E-Poin Siswa */}
         <div
           onClick={() => navigate('/portal/e-poin')}
-          className="glass-card p-5 rounded-2xl cursor-pointer hover:border-orange-400 border-teal-100 shadow-xs transition-all space-y-3"
+          className="group p-6 rounded-3xl cursor-pointer bg-white hover:bg-gradient-to-br hover:from-[#063b33] hover:via-[#042822] hover:to-[#021815] shadow-sm hover:shadow-2xl hover:shadow-emerald-950/30 hover:-translate-y-1.5 transition-all duration-300 space-y-3"
         >
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
-              <Award className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 group-hover:bg-emerald-500/20 group-hover:text-emerald-300 flex items-center justify-center transition-all duration-300">
+              <Award className="w-6 h-6" />
             </div>
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-extrabold bg-amber-100 text-amber-900 group-hover:bg-amber-400/20 group-hover:text-amber-200 transition-colors duration-300">
               Monitoring Karakter
             </span>
           </div>
           <div>
-            <p className="text-2xl font-heading font-extrabold text-teal-950">
+            <p className="text-2xl font-heading font-extrabold text-teal-950 group-hover:text-white transition-colors duration-300">
               {studentPoints.length} Catatan
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 group-hover:text-teal-100/80 transition-colors duration-300">
               Prestasi & Pelanggaran Kedisiplinan
             </p>
           </div>
@@ -198,7 +198,7 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({
               <ShieldCheck className="w-5 h-5 text-teal-600" />
               <span>Layanan Digital Sekolah & Google Apps Script</span>
             </h3>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-500 font-medium">
               {systemServices.length} Layanan Terhubung
             </span>
           </div>
@@ -216,30 +216,44 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({
                       navigate(service.url);
                     }
                   }}
-                  className="glass-card p-4 rounded-2xl cursor-pointer hover:scale-[1.01] hover:border-teal-400 border-teal-100 shadow-xs transition-all flex items-start gap-3.5"
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                  className={`group relative p-5 rounded-3xl cursor-pointer transition-all duration-300 ease-out hover:-translate-y-1.5 shadow-sm hover:shadow-2xl flex items-center gap-4 overflow-hidden ${
                     isExternal
-                      ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                      : 'bg-teal-50 text-teal-700 border border-teal-200'
-                  }`}>
-                    <DynamicIcon name={service.icon} className="w-5 h-5" />
+                      ? 'bg-white hover:bg-gradient-to-br hover:from-amber-500 hover:via-orange-600 hover:to-amber-700 hover:shadow-orange-950/30'
+                      : 'bg-white hover:bg-gradient-to-br hover:from-[#063b33] hover:via-[#042822] hover:to-[#021815] hover:shadow-emerald-950/35'
+                  }`}
+                >
+                  {/* Subtle top indicator highlight */}
+                  <div
+                    className={`absolute top-0 left-0 right-0 h-1.5 transition-opacity duration-300 opacity-0 group-hover:opacity-100 ${
+                      isExternal
+                        ? 'bg-gradient-to-r from-yellow-300 via-amber-200 to-orange-300'
+                        : 'bg-gradient-to-r from-emerald-400 via-teal-300 to-teal-500'
+                    }`}
+                  />
+
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs transition-all duration-300 group-hover:scale-110 ${
+                      isExternal
+                        ? 'bg-amber-50 text-amber-700 group-hover:bg-white/20 group-hover:text-amber-100'
+                        : 'bg-teal-50 text-teal-700 group-hover:bg-emerald-500/20 group-hover:text-emerald-300'
+                    }`}
+                  >
+                    <DynamicIcon name={service.icon} className="w-6 h-6" />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-1">
-                      <h4 className="font-bold text-xs text-teal-950 truncate">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="font-heading font-bold text-sm text-teal-950 group-hover:text-white transition-colors duration-300 truncate">
                         {service.name}
                       </h4>
-                      {isExternal && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-md bg-amber-100 text-amber-800 border border-amber-300 font-bold">
+                      {isExternal ? (
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-extrabold group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
                           GAS
                         </span>
+                      ) : (
+                        <ArrowRight className="w-4 h-4 text-teal-400 opacity-0 group-hover:opacity-100 group-hover:text-emerald-300 group-hover:translate-x-0.5 transition-all duration-300 shrink-0" />
                       )}
                     </div>
-                    <p className="text-[11px] text-slate-600 line-clamp-2 mt-0.5">
-                      {service.description}
-                    </p>
                   </div>
                 </div>
               );
