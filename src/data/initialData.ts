@@ -1282,10 +1282,10 @@ export const initialWebsiteSettings: WebsiteSettings = {
   headerBannerUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=1343&h=342&fit=crop&q=85',
   headerBannerAlt: 'Header Banner Resmi SMP Islam Al Hikmah Mayong',
   headerDisplayMode: 'photo_banner',
-  statsTotalStudents: 480,
-  statsTotalStaff: 38,
+  statsTotalStudents: 545,
+  statsTotalStaff: 32,
   statsPrograms: 12,
-  statsYearsEstablished: 20,
+  statsYearsEstablished: 48,
   heroHeadline: 'Membentuk Generasi Qur\'ani, Berakhlakul Karimah, & Berprestasi Unggul',
   heroSubheadline: 'Ekosistem digital terpadu SMP Islam Al Hikmah Mayong untuk tata kelola pendidikan islami modern, transparan, dan berkarakter.'
 };

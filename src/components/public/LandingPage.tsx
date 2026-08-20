@@ -47,13 +47,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     <div className="space-y-0 text-slate-800 bg-[#f7faf9]">
       
       {/* 1. HERO SECTION WITH BROCHURE CAPSULE GRAPHICS */}
-      <section className="relative min-h-[90vh] flex items-center justify-center py-16 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-teal-50/70 via-[#f7faf9] to-amber-50/40">
+      <section className="relative flex items-center justify-center pt-12 pb-14 lg:pt-16 lg:pb-18 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-b from-teal-50/70 via-[#f7faf9] to-amber-50/40">
         
         {/* Ambient Warm & Teal Glows */}
         <div className="liquid-glow w-[520px] h-[520px] bg-teal-500/15 -top-20 left-10" />
         <div className="liquid-glow w-[480px] h-[480px] bg-amber-400/20 bottom-0 right-10" />
 
-        <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           
           {/* Left Column: Text & CTAs */}
           <div className="lg:col-span-7 space-y-7 text-left">
@@ -73,8 +73,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Headline */}
             <div className="space-y-4">
-              <div className="inline-block px-3.5 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider text-amber-700 bg-amber-100/80 border border-amber-300/80 shadow-xs">
-                Penerimaan Siswa Baru 2026/2027 Telah Dibuka
+              <div className="inline-block px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider text-emerald-900 bg-emerald-100/90 border border-emerald-300/80 shadow-xs">
+                SMP ISLAM ALHIKMAH MAYONG
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold tracking-tight text-teal-950 leading-[1.12]">
                 Membentuk Generasi{' '}
@@ -115,32 +115,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </button>
             </div>
 
-            {/* Quick Information Metrics Styled with Large Bold Numbers */}
-            <div className="pt-6 sm:pt-8 border-t border-teal-100/80 flex flex-wrap items-center gap-8 sm:gap-12 lg:gap-14">
-              <div>
-                <p className="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-emerald-600 tracking-tight">
-                  {websiteSettings.statsYearsEstablished}+
+            {/* Quick Information Metrics */}
+            <div className="pt-6 sm:pt-7 border-t border-teal-100/80 flex flex-wrap items-center gap-8 sm:gap-12 lg:gap-14">
+              <div className="flex flex-col items-center text-center">
+                <p className="font-sans font-bold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-700 to-[#042822] tracking-tight leading-none">
+                  48+
                 </p>
-                <p className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 mt-1">
-                  Tahun Pengabdian
-                </p>
-              </div>
-
-              <div>
-                <p className="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-emerald-600 tracking-tight">
-                  {websiteSettings.statsTotalStudents}+
-                </p>
-                <p className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 mt-1">
-                  Siswa Aktif
+                <p className="font-sans font-light italic text-xs sm:text-sm text-slate-500 mt-1.5">
+                  tahun mengabdi
                 </p>
               </div>
 
-              <div>
-                <p className="font-heading font-black text-3xl sm:text-4xl lg:text-5xl text-emerald-600 tracking-tight">
-                  {websiteSettings.statsTotalStaff}+
+              <div className="flex flex-col items-center text-center">
+                <p className="font-sans font-bold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-700 to-[#042822] tracking-tight leading-none">
+                  545+
                 </p>
-                <p className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 mt-1">
-                  Guru & Pegawai
+                <p className="font-sans font-light italic text-xs sm:text-sm text-slate-500 mt-1.5">
+                  siswa aktif
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center text-center">
+                <p className="font-sans font-bold text-4xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-700 to-[#042822] tracking-tight leading-none">
+                  32+
+                </p>
+                <p className="font-sans font-light italic text-xs sm:text-sm text-slate-500 mt-1.5">
+                  guru dan tendik
                 </p>
               </div>
             </div>

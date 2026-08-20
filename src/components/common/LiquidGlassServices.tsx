@@ -53,7 +53,7 @@ export const LiquidGlassServices: React.FC<LiquidGlassServicesProps> = ({
   };
 
   return (
-    <section id="services" className="relative py-16 overflow-hidden bg-[#f7faf9]">
+    <section id="services" className="relative pt-12 pb-18 overflow-hidden bg-[#f7faf9]">
       {/* Subtle Liquid Glow Elements */}
       <div className="liquid-glow w-96 h-96 bg-teal-500/10 -top-20 -left-20" />
       <div className="liquid-glow w-96 h-96 bg-amber-500/10 -bottom-20 -right-20" />
