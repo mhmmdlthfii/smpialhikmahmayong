@@ -515,11 +515,12 @@ export interface AchievementItem {
   id: string;
   title: string;
   studentOrTeam: string;
+  studentClass?: string;
   competitionName: string;
   category?: string;
   organizer?: string;
-  level: 'Kecamatan' | 'Kabupaten/Kota' | 'Provinsi' | 'Nasional' | 'Internasional';
-  rank: 'Juara 1' | 'Juara 2' | 'Juara 3' | 'Harapan 1' | 'Medali Emas' | 'Medali Perak' | 'Medali Perunggu';
+  level: 'Kecamatan' | 'Kabupaten/Kota' | 'Provinsi' | 'Nasional' | 'Internasional' | string;
+  rank: 'Juara 1' | 'Juara 2' | 'Juara 3' | 'Harapan 1' | 'Medali Emas' | 'Medali Perak' | 'Medali Perunggu' | string;
   year: string;
   imageUrl: string;
 }

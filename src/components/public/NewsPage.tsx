@@ -36,7 +36,8 @@ export const NewsPage: React.FC<NewsPageProps> = ({ initialSlug, initialCategory
     const matchCat = selectedCategory === 'Semua' || item.category === selectedCategory;
     const matchSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.summary.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.summary && item.summary.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      item.content.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
   });
 

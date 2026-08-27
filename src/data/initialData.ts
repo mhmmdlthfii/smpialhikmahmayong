@@ -1082,11 +1082,58 @@ Platform ini mengintegrasikan administrasi persuratan tanda tangan elektronik re
     slug: 'isra-miraj-khotmil-quran-2026',
     category: 'Kegiatan',
     summary: 'Rangkaian dzikir bersama, khotmil qur\'an, dan tausiyah kebangsaan memperkuat ukhuwah islamiyah seluruh civitas akademika.',
-    content: `Dalam rangka memperingati Isra Mi'raj Nabi Muhammad SAW, SMP Islam Al Hikmah Mayong menyelenggarakan Khotmil Qur'an Akbar dan pengajian umum yang dihadiri oleh dewan pengasuh yayasan, komite sekolah, dan seluruh wali santri.`,
+    content: `Dalam rangka memperingati Isra Mi'raj Nabi Muhammad SAW, SMP Islam Al Hikmah Mayong menyelenggarakan Khotmil Qur'an Akbar dan pengajian umum yang dihadiri oleh dewan pengasuh yayasan, komite sekolah, dan seluruh wali santri.
+
+Acara diawali dengan sima'an 30 juz Al-Qur'an oleh para santri program tahfidz unggulan, dilanjutkan mauidhoh hasanah dan doa bersama untuk kemaslahatan madrasah dan bangsa.`,
     coverImage: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&auto=format&fit=crop&q=80',
     author: 'Kesiswaan & Keagamaan',
     publishedAt: '2026-01-28',
     views: 780,
+    isFeatured: false
+  },
+  {
+    id: 'news-4',
+    title: 'Penerimaan Peserta Didik Baru (PPDB) Tahun Ajaran 2026/2027 Resmi Dibuka',
+    slug: 'ppdb-2026-2027-resmi-dibuka',
+    category: 'Pengumuman',
+    summary: 'Pendaftaran siswa baru SMP Islam Al Hikmah Mayong Gelombang 1 dibuka dengan kuota terbatas dan beasiswa tahfidz serta prestasi.',
+    content: `SMP Islam Al Hikmah Mayong secara resmi mengumumkan pembukaan Pendaftaran Peserta Didik Baru (PPDB) untuk Tahun Ajaran 2026/2027. Tersedia jalur reguler, jalur beasiswa santri berprestasi, dan beasiswa tahfidzul qur'an.
+
+Calon peserta didik dan wali murid dapat melakukan pendaftaran secara online melalui portal resmi PPDB atau langsung datang ke sekretariat panitia di kampus SMP Islam Al Hikmah Mayong dengan membawa berkas persyaratan.`,
+    coverImage: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop&q=80',
+    author: 'Panitia PPDB 2026',
+    publishedAt: '2026-01-15',
+    views: 2410,
+    isFeatured: true
+  },
+  {
+    id: 'news-5',
+    title: 'Workshop Guru: Penguatan Kurikulum Berbasis Digital & Media Interaktif',
+    slug: 'workshop-guru-kurikulum-digital-interaktif',
+    category: 'Akademik',
+    summary: 'Dewan guru mengikuti pelatihan intensif pengembangan modul ajar berbasis digital dan asesmen sumatif interaktif.',
+    content: `Guna meningkatkan kualitas proses belajar mengajar, seluruh dewan asatidz dan pendidik SMP Islam Al Hikmah Mayong mengikuti workshop penguatan Kurikulum Merdeka dan pemanfaatan media interaktif digital.
+
+Pelatihan ini mencakup perancangan lembar kerja berbasis digital, pemanfaatan AI dalam diferensiasi pembelajaran, serta pengelolaan e-jurnal harian yang transparan dan akuntabel.`,
+    coverImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&auto=format&fit=crop&q=80',
+    author: 'Kurikulum & Litbang',
+    publishedAt: '2026-01-08',
+    views: 650,
+    isFeatured: false
+  },
+  {
+    id: 'news-6',
+    title: 'Gelar Karya P5: Menumbuhkan Jiwa Wirausaha dan Kearifan Lokal Mayong Jepara',
+    slug: 'gelar-karya-p5-kearifan-lokal-mayong',
+    category: 'Kegiatan',
+    summary: 'Pameran kreasi seni, kerajinan lokal, kuliner tradisional, dan inovasi sains hasil karya kolaboratif santri kelas VII, VIII, dan IX.',
+    content: `SMP Islam Al Hikmah Mayong menggelar pameran Akbar Proyek Penguatan Profil Pelajar Pancasila (P5) bertajuk "Kreativitas Santri untuk Negeri". Acara ini menampilkan ragam kerajinan tangan khas Mayong, stan kuliner higienis santri, serta pertunjukan seni hadroh rebana.
+
+Kegiatan ini mendapat antusiasme luar biasa dari para orang tua murid dan masyarakat sekitar yang turut hadir mengapresiasi bakat dan daya cipta santri.`,
+    coverImage: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&auto=format&fit=crop&q=80',
+    author: 'Tim P5 Al-Hikmah',
+    publishedAt: '2025-12-22',
+    views: 1120,
     isFeatured: false
   }
 ];
@@ -1134,23 +1181,55 @@ export const initialActivities: ActivityItem[] = [
 export const initialAchievements: AchievementItem[] = [
   {
     id: 'ach-1',
-    title: 'Juara 1 MTQ Pelajar Tingkat Kabupaten Jepara',
+    title: 'Juara 1 MTQ Pelajar Tingkat Kabupaten',
     studentOrTeam: 'Muhammad Zidan Al-Fatih',
+    studentClass: 'Kelas IX-A',
     competitionName: 'Musabaqah Tilawatil Qur\'an Dikpora Jepara 2026',
+    category: 'Keagamaan',
+    organizer: 'Dinas Pendidikan & Kemenag Jepara',
     level: 'Kabupaten/Kota',
     rank: 'Juara 1',
     year: '2026',
-    imageUrl: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=600&auto=format&fit=crop&q=80'
+    imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80'
   },
   {
     id: 'ach-2',
-    title: 'Khatam Tasmi\' Tahfidz 3 Juz Mutqin',
+    title: 'Medali Emas Tasmi\' Tahfidz 5 Juz Sekali Duduk',
     studentOrTeam: 'Aisyah Putri Azzahra',
-    competitionName: 'Munaqasyah Tahfidz Yayasan Al-Hikmah',
+    studentClass: 'Kelas VIII-Tahfidz',
+    competitionName: 'Munaqasyah Akbar Huffadz Al-Qur\'an',
+    category: 'Keagamaan',
+    organizer: 'LPTQ & Yayasan Al-Hikmah',
     level: 'Kecamatan',
     rank: 'Medali Emas',
+    year: '2026',
+    imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'ach-3',
+    title: 'Juara 1 Olimpiade Sains Matematika & IPA',
+    studentOrTeam: 'Fathan Nabil Rizqi',
+    studentClass: 'Kelas IX-B',
+    competitionName: 'Kompetisi Sains Madrasah (KSM) Tingkat Karesidenan',
+    category: 'Sains',
+    organizer: 'Forum MGMP Sains & Kemenag',
+    level: 'Kabupaten/Kota',
+    rank: 'Juara 1',
     year: '2025',
-    imageUrl: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=80'
+    imageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    id: 'ach-4',
+    title: 'Juara 2 Lomba Pidato Bahasa Arab (Khitobah)',
+    studentOrTeam: 'Najwa Syakira Ramadhani',
+    studentClass: 'Kelas VII-A',
+    competitionName: 'Festival Bahasa & Budaya Islam Jateng',
+    category: 'Seni & Budaya',
+    organizer: 'Balai Bahasa Jawa Tengah',
+    level: 'Provinsi',
+    rank: 'Juara 2',
+    year: '2025',
+    imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80'
   }
 ];
 

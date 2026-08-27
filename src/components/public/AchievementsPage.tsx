@@ -87,7 +87,14 @@ export const AchievementsPage: React.FC = () => {
                 </h3>
 
                 <div className="p-3.5 rounded-2xl bg-teal-50/60 border border-teal-100 text-xs space-y-1">
-                  <p className="text-slate-500 font-medium">Pemenang:</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-slate-500 font-medium">Santri / Pemenang:</p>
+                    {ach.studentClass && (
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-teal-100 text-teal-800">
+                        {ach.studentClass}
+                      </span>
+                    )}
+                  </div>
                   <p className="font-bold text-teal-950">{ach.studentOrTeam}</p>
                   <p className="text-[11px] text-teal-800 italic">{ach.competitionName}</p>
                 </div>
